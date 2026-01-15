@@ -2,9 +2,8 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Happy Bird 🐔</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
         
@@ -12,18 +11,28 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            touch-action: manipulation;
         }
         
         body {
             font-family: 'Fredoka One', cursive;
-            overflow-x: hidden;
             background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
             min-height: 100vh;
+            min-height: -webkit-fill-available;
         }
         
         #gameCanvas {
             display: block;
             margin: 0 auto;
+            touch-action: none;
         }
         
         .modal-overlay {
@@ -42,26 +51,26 @@
         .modal {
             background: linear-gradient(180deg, #FFE4B5 0%, #FFDAB9 100%);
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px;
             text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
             border: 5px solid #8B4513;
-            max-width: 400px;
+            max-width: 350px;
             width: 90%;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
         }
         
         .modal h1 {
             color: #8B4513;
-            font-size: 2rem;
+            font-size: 1.6rem;
             margin-bottom: 10px;
             text-shadow: 2px 2px 0 #FFD700;
         }
         
         .modal .chicken-icon {
-            font-size: 60px;
-            margin: 15px 0;
+            font-size: 50px;
+            margin: 10px 0;
             animation: bounce 1s infinite;
         }
         
@@ -73,7 +82,7 @@
         .modal input {
             width: 100%;
             padding: 12px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             border: 3px solid #8B4513;
             border-radius: 10px;
             margin: 15px 0;
@@ -85,8 +94,8 @@
             background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 1.1rem;
+            padding: 12px 25px;
+            font-size: 1rem;
             border-radius: 10px;
             cursor: pointer;
             font-family: 'Fredoka One', cursive;
@@ -108,10 +117,6 @@
             background: linear-gradient(180deg, #FFB6C1 0%, #FFA07A 100%);
         }
         
-        #startModal .modal {
-            background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
-        }
-        
         /* Нижнее меню */
         .bottom-menu {
             position: fixed;
@@ -121,7 +126,8 @@
             background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
             display: flex;
             justify-content: space-around;
-            padding: 10px 5px;
+            padding: 8px 5px;
+            padding-bottom: max(8px, env(safe-area-inset-bottom));
             z-index: 50;
             box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
         }
@@ -129,14 +135,17 @@
         .menu-btn {
             background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
             border: none;
-            padding: 10px 15px;
+            padding: 10px 12px;
             border-radius: 10px;
             cursor: pointer;
             font-family: 'Fredoka One', cursive;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #8B4513;
             box-shadow: 0 3px 0 #B8860B;
             transition: all 0.1s;
+            flex: 1;
+            margin: 0 3px;
+            max-width: 120px;
         }
         
         .menu-btn:hover {
@@ -150,40 +159,20 @@
             box-shadow: 0 3px 0 #8B0000;
         }
         
-        /* Статистика сверху */
-        .top-stats {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            justify-content: space-between;
-            z-index: 40;
-            pointer-events: none;
-        }
-        
-        .stat-box {
-            background: rgba(0,0,0,0.5);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
         /* Секции */
         .section {
-            padding: 20px;
-            padding-bottom: 80px;
+            padding: 15px;
+            padding-top: 60px;
+            padding-bottom: 100px;
             min-height: 100vh;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
         }
         
         .section-title {
             text-align: center;
             color: #8B4513;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 20px;
             text-shadow: 2px 2px 0 #FFD700;
         }
@@ -191,8 +180,8 @@
         /* Магазин */
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
             max-width: 600px;
             margin: 0 auto;
         }
@@ -200,14 +189,14 @@
         .shop-item {
             background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
             border: 3px solid #8B4513;
-            border-radius: 15px;
-            padding: 15px;
+            border-radius: 12px;
+            padding: 10px;
             text-align: center;
             transition: transform 0.2s;
         }
         
         .shop-item:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
         }
         
         .shop-item.owned {
@@ -217,29 +206,29 @@
         
         .shop-item.equipped {
             border-color: #FFD700;
-            box-shadow: 0 0 20px #FFD700;
+            box-shadow: 0 0 15px #FFD700;
         }
         
         .shop-item .item-preview {
-            font-size: 50px;
-            margin: 10px 0;
+            font-size: 35px;
+            margin: 5px 0;
         }
         
         .shop-item .item-name {
             color: #8B4513;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
+            font-size: 0.75rem;
+            margin-bottom: 3px;
         }
         
         .shop-item .item-price {
             color: #B8860B;
-            font-size: 1rem;
-            margin-bottom: 10px;
+            font-size: 0.8rem;
+            margin-bottom: 8px;
         }
         
         .shop-btn {
-            padding: 8px 15px;
-            font-size: 0.9rem;
+            padding: 6px 10px;
+            font-size: 0.75rem;
         }
         
         .shop-btn.buy {
@@ -261,14 +250,14 @@
         .leaderboard-tabs {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
         
         .tab-btn {
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            padding: 8px 12px;
+            font-size: 0.8rem;
         }
         
         .tab-btn.active {
@@ -279,17 +268,19 @@
         .leaderboard-list {
             max-width: 500px;
             margin: 0 auto;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
         }
         
         .leaderboard-item {
             background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
             border: 3px solid #8B4513;
             border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
+            padding: 12px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
         
         .leaderboard-item.top-1 {
@@ -307,8 +298,8 @@
         }
         
         .rank {
-            font-size: 1.5rem;
-            width: 40px;
+            font-size: 1.3rem;
+            width: 35px;
             text-align: center;
         }
         
@@ -317,12 +308,12 @@
         }
         
         .player-name {
-            font-size: 1.1rem;
+            font-size: 1rem;
             color: #8B4513;
         }
         
         .player-score {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #B8860B;
         }
         
@@ -332,39 +323,40 @@
             right: 10px;
             background: rgba(0,0,0,0.7);
             color: #FFD700;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 1.2rem;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
             z-index: 60;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .game-container {
             padding-bottom: 70px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-top: 50px;
         }
         
         /* Категории магазина */
         .shop-category {
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
         
         .category-title {
             color: #8B4513;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             text-align: center;
-            margin-bottom: 15px;
-            padding: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
             background: rgba(255,255,255,0.5);
             border-radius: 10px;
         }
         
         /* Панель старта */
-        .game-container {
-            position: relative;
-        }
-        
         .start-panel {
             position: absolute;
             top: 50%;
@@ -373,40 +365,42 @@
             background: rgba(255, 248, 220, 0.95);
             border: 4px solid #8B4513;
             border-radius: 20px;
-            padding: 25px 35px;
+            padding: 20px 30px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             z-index: 30;
+            width: 90%;
+            max-width: 300px;
         }
         
         .start-panel h2 {
             color: #8B4513;
-            font-size: 1.4rem;
-            margin-bottom: 15px;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
             text-shadow: 1px 1px 0 #FFD700;
         }
         
         .start-info {
             background: rgba(139, 69, 19, 0.1);
             border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 10px;
+            margin-bottom: 12px;
         }
         
         .start-info p {
             color: #555;
-            font-size: 0.9rem;
-            margin: 5px 0;
+            font-size: 0.85rem;
+            margin: 4px 0;
         }
         
         .best-score-text {
             color: #B8860B;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
         }
         
         .best-score-text span {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             color: #FF6347;
         }
         
@@ -414,8 +408,8 @@
             background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
             color: white;
             border: none;
-            padding: 15px 50px;
-            font-size: 1.4rem;
+            padding: 12px 40px;
+            font-size: 1.3rem;
             border-radius: 15px;
             cursor: pointer;
             font-family: 'Fredoka One', cursive;
@@ -432,9 +426,35 @@
             transform: translateY(5px);
             box-shadow: none;
         }
+        
+        .reset-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,0,0,0.7);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            z-index: 60;
+        }
+        
+        /* Цветные превью скинов */
+        .skin-preview {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            margin: 5px auto;
+            border: 3px solid #8B4513;
+        }
     </style>
 </head>
 <body>
+    <!-- Кнопка сброса -->
+    <button class="reset-btn" onclick="resetAllData()">🔄 Сброс</button>
+
     <!-- Отображение монет -->
     <div class="coins-display" id="coinsDisplay">
         <span>🪙</span>
@@ -446,26 +466,24 @@
         <div class="modal">
             <h1>🌟 Happy Bird 🌟</h1>
             <div class="chicken-icon">🐔</div>
-            <p style="color: #8B4513; font-size: 1.1rem; margin-bottom: 10px;">Привет! Дай имя своей курочке!</p>
+            <p style="color: #8B4513; font-size: 1rem; margin-bottom: 10px;">Привет! Дай имя своей курочке!</p>
             <input type="text" id="chickenName" placeholder="Введи имя..." maxlength="15">
             <br>
             <button onclick="setChickenName()">Далее ➡️</button>
         </div>
     </div>
     
-
-    
     <!-- Модальное окно конца игры -->
     <div id="gameOverModal" class="modal-overlay hidden">
         <div class="modal">
             <h1>💔 Игра окончена!</h1>
             <div class="chicken-icon">😢🐔</div>
-            <p id="finalScore" style="color: #8B4513; font-size: 1.3rem; margin: 15px 0;"></p>
-            <p id="earnedCoins" style="color: #B8860B; font-size: 1.2rem; margin-bottom: 10px;"></p>
-            <p id="newRecord" style="color: #FF6347; font-size: 1.1rem; margin-bottom: 10px; display: none;">🎉 НОВЫЙ РЕКОРД! 🎉</p>
-            <p id="bestScore" style="color: #666; margin-bottom: 20px;"></p>
-            <button onclick="restartGame()" style="font-size: 1.2rem; padding: 12px 35px;">▶️ Играть снова</button>
-            <button onclick="showStartScreen()" style="background: linear-gradient(180deg, #FF9800 0%, #F57C00 100%); font-size: 1rem; padding: 10px 25px; box-shadow: 0 4px 0 #E65100;">🏠 В меню</button>
+            <p id="finalScore" style="color: #8B4513; font-size: 1.2rem; margin: 12px 0;"></p>
+            <p id="earnedCoins" style="color: #B8860B; font-size: 1.1rem; margin-bottom: 8px;"></p>
+            <p id="newRecord" style="color: #FF6347; font-size: 1rem; margin-bottom: 8px; display: none;">🎉 НОВЫЙ РЕКОРД! 🎉</p>
+            <p id="bestScore" style="color: #666; margin-bottom: 15px;"></p>
+            <button onclick="restartGame()" style="font-size: 1.1rem; padding: 10px 30px;">▶️ Ещё раз</button>
+            <button onclick="showStartScreen()" style="background: linear-gradient(180deg, #FF9800 0%, #F57C00 100%); font-size: 0.9rem; padding: 8px 20px; box-shadow: 0 4px 0 #E65100;">🏠 Меню</button>
         </div>
     </div>
     
@@ -477,7 +495,7 @@
         <div id="startPanel" class="start-panel">
             <h2 id="chickenGreeting">🐔 Happy Bird 🐔</h2>
             <div class="start-info">
-                <p>🎮 <strong>ПРОБЕЛ</strong> или <strong>ТАП</strong> для прыжка</p>
+                <p>🎮 <strong>ПРОБЕЛ</strong> или <strong>ТАП</strong></p>
                 <p style="color: #4CAF50;">💰 +20 монет за очко!</p>
             </div>
             <p class="best-score-text">🏆 Рекорд: <span id="displayBestScore">0</span></p>
@@ -495,7 +513,7 @@
         </div>
         
         <div class="shop-category">
-            <h2 class="category-title">🎩 Шляпы</h2>
+            <h2 class="category-title">🎩 Аксессуары</h2>
             <div class="shop-grid" id="hatsGrid"></div>
         </div>
     </div>
@@ -508,7 +526,7 @@
             <button class="tab-btn active" onclick="showLeaderboard('week')">📅 Неделя</button>
             <button class="tab-btn" onclick="showLeaderboard('month')">📆 Месяц</button>
             <button class="tab-btn" onclick="showLeaderboard('year')">📊 Год</button>
-            <button class="tab-btn" onclick="showLeaderboard('all')">🌟 Все время</button>
+            <button class="tab-btn" onclick="showLeaderboard('all')">🌟 Всё время</button>
         </div>
         
         <div class="leaderboard-list" id="leaderboardList"></div>
@@ -531,38 +549,58 @@
             equippedHat: 'none',
             ownedSkins: ['default'],
             ownedHats: ['none'],
-            scores: [] // {score, date}
+            scores: []
         };
         
-        // Скины
+        // Расширенные скины (15 штук)
         const skins = [
-            { id: 'default', name: 'Обычная', price: 0, color: '#FFD700', bodyColor: '#FFD700', bellyColor: '#FFF8DC' },
-            { id: 'red', name: 'Красная', price: 200, color: '#FF6347', bodyColor: '#FF6347', bellyColor: '#FFB6C1' },
-            { id: 'blue', name: 'Голубая', price: 200, color: '#87CEEB', bodyColor: '#87CEEB', bellyColor: '#E0FFFF' },
-            { id: 'green', name: 'Зелёная', price: 300, color: '#90EE90', bodyColor: '#90EE90', bellyColor: '#F0FFF0' },
-            { id: 'purple', name: 'Фиолетовая', price: 300, color: '#DDA0DD', bodyColor: '#DDA0DD', bellyColor: '#E6E6FA' },
-            { id: 'golden', name: 'Золотая', price: 500, color: '#FFD700', bodyColor: '#FFD700', bellyColor: '#FFFACD', special: true },
-            { id: 'rainbow', name: 'Радужная', price: 1000, color: 'rainbow', bodyColor: '#FF69B4', bellyColor: '#FFE4E1', special: true },
-            { id: 'dark', name: 'Тёмная', price: 800, color: '#4A4A4A', bodyColor: '#4A4A4A', bellyColor: '#6A6A6A' }
+            { id: 'default', name: 'Обычная', price: 0, bodyColor: '#FFD700', bellyColor: '#FFF8DC' },
+            { id: 'red', name: 'Красная', price: 100, bodyColor: '#FF6347', bellyColor: '#FFB6C1' },
+            { id: 'blue', name: 'Голубая', price: 100, bodyColor: '#4A90D9', bellyColor: '#B0D4F1' },
+            { id: 'green', name: 'Зелёная', price: 150, bodyColor: '#32CD32', bellyColor: '#90EE90' },
+            { id: 'purple', name: 'Фиолетовая', price: 150, bodyColor: '#9370DB', bellyColor: '#DDA0DD' },
+            { id: 'pink', name: 'Розовая', price: 150, bodyColor: '#FF69B4', bellyColor: '#FFB6C1' },
+            { id: 'orange', name: 'Оранжевая', price: 200, bodyColor: '#FF8C00', bellyColor: '#FFDAB9' },
+            { id: 'cyan', name: 'Бирюзовая', price: 200, bodyColor: '#00CED1', bellyColor: '#E0FFFF' },
+            { id: 'lime', name: 'Лаймовая', price: 200, bodyColor: '#ADFF2F', bellyColor: '#F0FFF0' },
+            { id: 'coral', name: 'Коралловая', price: 250, bodyColor: '#FF7F50', bellyColor: '#FFE4E1' },
+            { id: 'gold', name: 'Золотая', price: 500, bodyColor: '#FFD700', bellyColor: '#FFFACD', special: true },
+            { id: 'silver', name: 'Серебряная', price: 400, bodyColor: '#C0C0C0', bellyColor: '#E8E8E8' },
+            { id: 'dark', name: 'Тёмная', price: 350, bodyColor: '#2F2F2F', bellyColor: '#4F4F4F' },
+            { id: 'rainbow', name: 'Радужная', price: 1000, bodyColor: 'rainbow', bellyColor: '#FFE4E1', special: true },
+            { id: 'galaxy', name: 'Галактика', price: 800, bodyColor: '#1a1a2e', bellyColor: '#4a4a6a', special: true }
         ];
         
-        // Шляпы
+        // Расширенные аксессуары (12 штук)
         const hats = [
-            { id: 'none', name: 'Без шляпы', price: 0, emoji: '❌' },
+            { id: 'none', name: 'Нет', price: 0, emoji: '❌' },
             { id: 'crown', name: 'Корона', price: 500, emoji: '👑' },
             { id: 'tophat', name: 'Цилиндр', price: 300, emoji: '🎩' },
-            { id: 'cap', name: 'Кепка', price: 200, emoji: '🧢' },
-            { id: 'wizard', name: 'Волшебная', price: 600, emoji: '🪄' },
-            { id: 'party', name: 'Праздничная', price: 250, emoji: '🎉' },
-            { id: 'santa', name: 'Новогодняя', price: 400, emoji: '🎅' },
-            { id: 'cowboy', name: 'Ковбойская', price: 350, emoji: '🤠' }
+            { id: 'cap', name: 'Кепка', price: 150, emoji: '🧢' },
+            { id: 'party', name: 'Праздник', price: 200, emoji: '🎉' },
+            { id: 'santa', name: 'Санта', price: 350, emoji: '🎅' },
+            { id: 'cowboy', name: 'Ковбой', price: 300, emoji: '🤠' },
+            { id: 'angel', name: 'Ангел', price: 450, emoji: '😇' },
+            { id: 'devil', name: 'Демон', price: 450, emoji: '😈' },
+            { id: 'star', name: 'Звезда', price: 250, emoji: '⭐' },
+            { id: 'heart', name: 'Сердце', price: 200, emoji: '❤️' },
+            { id: 'fire', name: 'Огонь', price: 400, emoji: '🔥' }
         ];
+        
+        // Сброс всех данных
+        function resetAllData() {
+            if (confirm('Сбросить все данные? Это удалит монеты, скины и рекорды!')) {
+                localStorage.removeItem('happyBirdData');
+                location.reload();
+            }
+        }
         
         // Загрузка данных
         function loadGameData() {
             const saved = localStorage.getItem('happyBirdData');
             if (saved) {
-                gameData = JSON.parse(saved);
+                const parsed = JSON.parse(saved);
+                gameData = { ...gameData, ...parsed };
             }
             updateCoinsDisplay();
         }
@@ -581,8 +619,13 @@
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         
-        canvas.width = Math.min(480, window.innerWidth);
-        canvas.height = Math.min(560, window.innerHeight - 70);
+        function resizeCanvas() {
+            const maxWidth = 400;
+            const maxHeight = window.innerHeight - 120;
+            canvas.width = Math.min(maxWidth, window.innerWidth - 20);
+            canvas.height = Math.min(500, maxHeight);
+            ground.y = canvas.height - 60;
+        }
         
         let gameStarted = false;
         let gameOver = false;
@@ -591,42 +634,50 @@
         let currentSection = 'game';
         
         const chicken = {
-            x: 80,
-            y: canvas.height / 2,
-            width: 50,
-            height: 40,
+            x: 60,
+            y: 200,
+            width: 40,
+            height: 32,
             velocity: 0,
-            gravity: 0.5,
-            jump: -9,
+            gravity: 0.20, // Ещё медленнее падает
+            jump: -6,
             rotation: 0
         };
         
         let pipes = [];
-        const pipeWidth = 70;
-        const pipeGap = 180;
-        const pipeSpeed = 3;
+        const pipeWidth = 60;
+        const pipeGap = 160;
+        const pipeSpeed = 2.5;
         
         let clouds = [];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 4; i++) {
             clouds.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * (canvas.height / 3),
-                size: 30 + Math.random() * 40,
-                speed: 0.5 + Math.random() * 0.5
+                x: Math.random() * 400,
+                y: Math.random() * 100,
+                size: 25 + Math.random() * 30,
+                speed: 0.3 + Math.random() * 0.3
             });
         }
         
         const ground = {
-            y: canvas.height - 80,
-            height: 80
+            y: 440,
+            height: 60
         };
+        
+        resizeCanvas();
         
         // ==================== НАВИГАЦИЯ ====================
         function showSection(section) {
             currentSection = section;
             
-            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+            document.querySelectorAll('.menu-btn').forEach((btn, index) => {
+                btn.classList.remove('active');
+                if ((section === 'game' && index === 0) ||
+                    (section === 'shop' && index === 1) ||
+                    (section === 'leaderboard' && index === 2)) {
+                    btn.classList.add('active');
+                }
+            });
             
             document.getElementById('gameSection').classList.add('hidden');
             document.getElementById('shopSection').classList.add('hidden');
@@ -634,6 +685,9 @@
             
             if (section === 'game') {
                 document.getElementById('gameSection').classList.remove('hidden');
+                if (!gameStarted) {
+                    initialDraw();
+                }
             } else if (section === 'shop') {
                 document.getElementById('shopSection').classList.remove('hidden');
                 renderShop();
@@ -656,24 +710,26 @@
                 const item = document.createElement('div');
                 item.className = `shop-item ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''}`;
                 
-                let previewStyle = `background: ${skin.bodyColor}; width: 60px; height: 60px; border-radius: 50%; margin: 0 auto;`;
+                let previewStyle = `background: ${skin.bodyColor};`;
                 if (skin.id === 'rainbow') {
-                    previewStyle = `background: linear-gradient(45deg, red, orange, yellow, green, blue, purple); width: 60px; height: 60px; border-radius: 50%; margin: 0 auto;`;
+                    previewStyle = `background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);`;
+                } else if (skin.id === 'galaxy') {
+                    previewStyle = `background: linear-gradient(45deg, #1a1a2e, #4a4a8a, #1a1a2e);`;
                 }
                 
                 item.innerHTML = `
-                    <div class="item-preview" style="${previewStyle}"></div>
+                    <div class="skin-preview" style="${previewStyle}"></div>
                     <div class="item-name">${skin.name}</div>
-                    <div class="item-price">${skin.price === 0 ? 'Бесплатно' : '🪙 ' + skin.price}</div>
+                    <div class="item-price">${skin.price === 0 ? 'Бесплатно' : '🪙' + skin.price}</div>
                     ${owned 
-                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipSkin('${skin.id}')">${equipped ? 'Надето' : 'Надеть'}</button>`
+                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipSkin('${skin.id}')">${equipped ? '✓' : 'Надеть'}</button>`
                         : `<button class="shop-btn buy" onclick="buySkin('${skin.id}')">Купить</button>`
                     }
                 `;
                 skinsGrid.appendChild(item);
             });
             
-            // Шляпы
+            // Аксессуары
             const hatsGrid = document.getElementById('hatsGrid');
             hatsGrid.innerHTML = '';
             
@@ -687,9 +743,9 @@
                 item.innerHTML = `
                     <div class="item-preview">${hat.emoji}</div>
                     <div class="item-name">${hat.name}</div>
-                    <div class="item-price">${hat.price === 0 ? 'Бесплатно' : '🪙 ' + hat.price}</div>
+                    <div class="item-price">${hat.price === 0 ? 'Бесплатно' : '🪙' + hat.price}</div>
                     ${owned 
-                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipHat('${hat.id}')">${equipped ? 'Надето' : 'Надеть'}</button>`
+                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipHat('${hat.id}')">${equipped ? '✓' : 'Надеть'}</button>`
                         : `<button class="shop-btn buy" onclick="buyHat('${hat.id}')">Купить</button>`
                     }
                 `;
@@ -755,23 +811,21 @@
                     const yearAgo = new Date(now - 365 * 24 * 60 * 60 * 1000);
                     return scoreDate >= yearAgo;
                 }
-                return true; // all time
+                return true;
             });
             
             // Сортировка по убыванию
             filteredScores.sort((a, b) => b.score - a.score);
             
-            // Показываем топ 10
-            const top10 = filteredScores.slice(0, 10);
-            
             const list = document.getElementById('leaderboardList');
             
-            if (top10.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #8B4513; padding: 40px;">Пока нет результатов. Сыграй и попади в рейтинг! 🎮</p>';
+            if (filteredScores.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #8B4513; padding: 40px;">Пока нет результатов. Сыграй! 🎮</p>';
                 return;
             }
             
-            list.innerHTML = top10.map((entry, index) => {
+            // Показываем ВСЕ результаты
+            list.innerHTML = filteredScores.map((entry, index) => {
                 let rankClass = '';
                 let rankEmoji = index + 1;
                 if (index === 0) { rankClass = 'top-1'; rankEmoji = '🥇'; }
@@ -785,7 +839,7 @@
                         <div class="rank">${rankEmoji}</div>
                         <div class="player-info">
                             <div class="player-name">🐔 ${gameData.chickenName}</div>
-                            <div style="font-size: 0.8rem; color: #666;">${date}</div>
+                            <div style="font-size: 0.75rem; color: #666;">${date}</div>
                         </div>
                         <div class="player-score">${entry.score} 🏆</div>
                     </div>
@@ -821,6 +875,7 @@
             gameStarted = true;
             gameOver = false;
             score = 0;
+            frameCount = 0;
             pipes = [];
             chicken.y = canvas.height / 2;
             chicken.velocity = 0;
@@ -829,13 +884,7 @@
         
         function restartGame() {
             document.getElementById('gameOverModal').classList.add('hidden');
-            gameStarted = true;
-            gameOver = false;
-            score = 0;
-            pipes = [];
-            chicken.y = canvas.height / 2;
-            chicken.velocity = 0;
-            gameLoop();
+            startGame();
         }
         
         function flap() {
@@ -855,10 +904,10 @@
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
             flap();
-        });
+        }, { passive: false });
         
         function createPipe() {
-            const minHeight = 80;
+            const minHeight = 60;
             const maxHeight = canvas.height - ground.height - pipeGap - minHeight;
             const topHeight = minHeight + Math.random() * maxHeight;
             
@@ -879,40 +928,42 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
+            // Солнце
             ctx.fillStyle = '#FFD700';
             ctx.beginPath();
-            ctx.arc(canvas.width - 60, 60, 40, 0, Math.PI * 2);
+            ctx.arc(canvas.width - 50, 50, 30, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = '#FFF8DC';
             ctx.beginPath();
-            ctx.arc(canvas.width - 65, 55, 30, 0, Math.PI * 2);
+            ctx.arc(canvas.width - 53, 47, 22, 0, Math.PI * 2);
             ctx.fill();
             
+            // Облака
             clouds.forEach(cloud => {
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
                 ctx.beginPath();
                 ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
-                ctx.arc(cloud.x + cloud.size * 0.6, cloud.y - cloud.size * 0.2, cloud.size * 0.7, 0, Math.PI * 2);
-                ctx.arc(cloud.x + cloud.size, cloud.y, cloud.size * 0.8, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.size * 0.5, cloud.y - cloud.size * 0.2, cloud.size * 0.6, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.size * 0.8, cloud.y, cloud.size * 0.7, 0, Math.PI * 2);
                 ctx.fill();
                 
                 cloud.x -= cloud.speed;
                 if (cloud.x + cloud.size * 2 < 0) {
                     cloud.x = canvas.width + cloud.size;
-                    cloud.y = Math.random() * (canvas.height / 3);
+                    cloud.y = Math.random() * 100;
                 }
             });
         }
         
         function drawGround() {
             ctx.fillStyle = '#228B22';
-            ctx.fillRect(0, ground.y, canvas.width, 20);
+            ctx.fillRect(0, ground.y, canvas.width, 15);
             ctx.fillStyle = '#8B4513';
-            ctx.fillRect(0, ground.y + 20, canvas.width, ground.height - 20);
+            ctx.fillRect(0, ground.y + 15, canvas.width, ground.height - 15);
             ctx.fillStyle = '#A0522D';
-            for (let i = 0; i < canvas.width; i += 30) {
-                ctx.fillRect(i, ground.y + 25, 20, 10);
-                ctx.fillRect(i + 15, ground.y + 45, 20, 10);
+            for (let i = 0; i < canvas.width; i += 25) {
+                ctx.fillRect(i, ground.y + 20, 15, 8);
+                ctx.fillRect(i + 12, ground.y + 35, 15, 8);
             }
         }
         
@@ -927,17 +978,17 @@
                 ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
                 
                 ctx.fillStyle = '#006400';
-                ctx.fillRect(pipe.x - 5, pipe.topHeight - 30, pipeWidth + 10, 30);
+                ctx.fillRect(pipe.x - 4, pipe.topHeight - 25, pipeWidth + 8, 25);
                 ctx.fillStyle = '#32CD32';
-                ctx.fillRect(pipe.x - 3, pipe.topHeight - 28, pipeWidth + 6, 26);
+                ctx.fillRect(pipe.x - 2, pipe.topHeight - 23, pipeWidth + 4, 21);
                 
                 ctx.fillStyle = pipeGradient;
                 ctx.fillRect(pipe.x, pipe.bottomY, pipeWidth, canvas.height - pipe.bottomY - ground.height);
                 
                 ctx.fillStyle = '#006400';
-                ctx.fillRect(pipe.x - 5, pipe.bottomY, pipeWidth + 10, 30);
+                ctx.fillRect(pipe.x - 4, pipe.bottomY, pipeWidth + 8, 25);
                 ctx.fillStyle = '#32CD32';
-                ctx.fillRect(pipe.x - 3, pipe.bottomY + 2, pipeWidth + 6, 26);
+                ctx.fillRect(pipe.x - 2, pipe.bottomY + 2, pipeWidth + 4, 21);
             });
         }
         
@@ -948,19 +999,26 @@
             ctx.save();
             ctx.translate(chicken.x + chicken.width / 2, chicken.y + chicken.height / 2);
             
-            chicken.rotation = Math.min(Math.max(chicken.velocity * 3, -30), 90);
+            chicken.rotation = Math.min(Math.max(chicken.velocity * 4, -25), 70);
             ctx.rotate(chicken.rotation * Math.PI / 180);
             
             // Тело
             if (skin.id === 'rainbow') {
                 const rainbowGradient = ctx.createLinearGradient(-chicken.width/2, 0, chicken.width/2, 0);
                 rainbowGradient.addColorStop(0, '#FF0000');
-                rainbowGradient.addColorStop(0.2, '#FF7F00');
-                rainbowGradient.addColorStop(0.4, '#FFFF00');
-                rainbowGradient.addColorStop(0.6, '#00FF00');
-                rainbowGradient.addColorStop(0.8, '#0000FF');
+                rainbowGradient.addColorStop(0.17, '#FF7F00');
+                rainbowGradient.addColorStop(0.33, '#FFFF00');
+                rainbowGradient.addColorStop(0.5, '#00FF00');
+                rainbowGradient.addColorStop(0.67, '#0000FF');
+                rainbowGradient.addColorStop(0.83, '#4B0082');
                 rainbowGradient.addColorStop(1, '#8B00FF');
                 ctx.fillStyle = rainbowGradient;
+            } else if (skin.id === 'galaxy') {
+                const galaxyGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, chicken.width/2);
+                galaxyGradient.addColorStop(0, '#4a4a8a');
+                galaxyGradient.addColorStop(0.5, '#1a1a2e');
+                galaxyGradient.addColorStop(1, '#0a0a1e');
+                ctx.fillStyle = galaxyGradient;
             } else {
                 ctx.fillStyle = skin.bodyColor;
             }
@@ -971,58 +1029,70 @@
             // Живот
             ctx.fillStyle = skin.bellyColor;
             ctx.beginPath();
-            ctx.ellipse(5, 5, chicken.width / 3, chicken.height / 3, 0, 0, Math.PI * 2);
+            ctx.ellipse(4, 4, chicken.width / 3, chicken.height / 3, 0, 0, Math.PI * 2);
             ctx.fill();
             
+            // Звёзды для галактики
+            if (skin.id === 'galaxy') {
+                ctx.fillStyle = 'white';
+                for (let i = 0; i < 5; i++) {
+                    const sx = (Math.sin(frameCount * 0.05 + i) * 10);
+                    const sy = (Math.cos(frameCount * 0.05 + i * 2) * 8);
+                    ctx.beginPath();
+                    ctx.arc(sx, sy, 1, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
             // Крыло
-            ctx.fillStyle = skin.id === 'rainbow' ? '#FF69B4' : '#DAA520';
+            ctx.fillStyle = skin.id === 'rainbow' ? '#FF69B4' : (skin.id === 'galaxy' ? '#6a6aaa' : '#DAA520');
             ctx.beginPath();
-            const wingFlap = Math.sin(frameCount * 0.3) * 5;
-            ctx.ellipse(-5, wingFlap, 12, 18, -0.3, 0, Math.PI * 2);
+            const wingFlap = Math.sin(frameCount * 0.4) * 4;
+            ctx.ellipse(-4, wingFlap, 10, 14, -0.3, 0, Math.PI * 2);
             ctx.fill();
             
             // Глаз
             ctx.fillStyle = 'white';
             ctx.beginPath();
-            ctx.arc(15, -8, 10, 0, Math.PI * 2);
+            ctx.arc(12, -6, 8, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = 'black';
             ctx.beginPath();
-            ctx.arc(18, -8, 5, 0, Math.PI * 2);
+            ctx.arc(14, -6, 4, 0, Math.PI * 2);
             ctx.fill();
             ctx.fillStyle = 'white';
             ctx.beginPath();
-            ctx.arc(19, -10, 2, 0, Math.PI * 2);
+            ctx.arc(15, -7, 1.5, 0, Math.PI * 2);
             ctx.fill();
             
             // Клюв
             ctx.fillStyle = '#FF6347';
             ctx.beginPath();
-            ctx.moveTo(20, 0);
-            ctx.lineTo(35, 0);
-            ctx.lineTo(20, 8);
+            ctx.moveTo(16, 0);
+            ctx.lineTo(28, 0);
+            ctx.lineTo(16, 6);
             ctx.closePath();
             ctx.fill();
             
             // Гребешок
             ctx.fillStyle = '#FF4500';
             ctx.beginPath();
-            ctx.arc(5, -22, 6, 0, Math.PI * 2);
-            ctx.arc(-3, -20, 5, 0, Math.PI * 2);
-            ctx.arc(12, -20, 5, 0, Math.PI * 2);
+            ctx.arc(4, -18, 5, 0, Math.PI * 2);
+            ctx.arc(-2, -16, 4, 0, Math.PI * 2);
+            ctx.arc(10, -16, 4, 0, Math.PI * 2);
             ctx.fill();
             
             // Бородка
             ctx.fillStyle = '#FF4500';
             ctx.beginPath();
-            ctx.arc(20, 12, 5, 0, Math.PI * 2);
+            ctx.arc(16, 10, 4, 0, Math.PI * 2);
             ctx.fill();
             
-            // Шляпа
+            // Шляпа/аксессуар
             if (hat && hat.id !== 'none') {
-                ctx.font = '25px Arial';
+                ctx.font = '20px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(hat.emoji, 0, -30);
+                ctx.fillText(hat.emoji, 0, -24);
             }
             
             ctx.restore();
@@ -1031,15 +1101,11 @@
         function drawScore() {
             ctx.fillStyle = 'white';
             ctx.strokeStyle = '#333';
-            ctx.lineWidth = 4;
-            ctx.font = 'bold 48px Fredoka One, Arial';
+            ctx.lineWidth = 3;
+            ctx.font = 'bold 36px Fredoka One, Arial';
             ctx.textAlign = 'center';
-            ctx.strokeText(score, canvas.width / 2, 60);
-            ctx.fillText(score, canvas.width / 2, 60);
-            
-            ctx.font = 'bold 18px Fredoka One, Arial';
-            ctx.strokeText(gameData.chickenName, canvas.width / 2, 85);
-            ctx.fillText(gameData.chickenName, canvas.width / 2, 85);
+            ctx.strokeText(score, canvas.width / 2, 50);
+            ctx.fillText(score, canvas.width / 2, 50);
         }
         
         function checkCollision() {
@@ -1064,7 +1130,7 @@
             chicken.velocity += chicken.gravity;
             chicken.y += chicken.velocity;
             
-            if (frameCount % 100 === 0) {
+            if (frameCount % 120 === 0) {
                 createPipe();
             }
             
@@ -1104,10 +1170,10 @@
             saveGameData();
             
             const earnedCoins = score * 20;
-            document.getElementById('finalScore').textContent = `${gameData.chickenName} набрала ${score} очков!`;
+            document.getElementById('finalScore').textContent = `${gameData.chickenName}: ${score} очков!`;
             document.getElementById('earnedCoins').textContent = `+${earnedCoins} монет! 🪙`;
             document.getElementById('newRecord').style.display = isNewRecord ? 'block' : 'none';
-            document.getElementById('bestScore').textContent = `🏆 Лучший результат: ${gameData.bestScore}`;
+            document.getElementById('bestScore').textContent = `🏆 Рекорд: ${gameData.bestScore}`;
             document.getElementById('gameOverModal').classList.remove('hidden');
         }
         
@@ -1136,12 +1202,13 @@
         function initialDraw() {
             drawBackground();
             drawGround();
+            chicken.y = canvas.height / 2;
+            drawChicken();
         }
         
         // ==================== ИНИЦИАЛИЗАЦИЯ ====================
         loadGameData();
         
-        // Если имя уже есть, показываем стартовый экран
         if (gameData.chickenName) {
             document.getElementById('nameModal').classList.add('hidden');
             updateStartPanel();
@@ -1152,9 +1219,7 @@
         initialDraw();
         
         window.addEventListener('resize', () => {
-            canvas.width = Math.min(480, window.innerWidth);
-            canvas.height = Math.min(560, window.innerHeight - 70);
-            ground.y = canvas.height - 80;
+            resizeCanvas();
             if (!gameStarted) {
                 initialDraw();
             }

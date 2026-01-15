@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Bird 🐔</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Fredoka One', cursive;
+            overflow-x: hidden;
+            background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
+            min-height: 100vh;
+        }
+        
+        #gameCanvas {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .modal {
+            background: linear-gradient(180deg, #FFE4B5 0%, #FFDAB9 100%);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            border: 5px solid #8B4513;
+            max-width: 400px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal h1 {
+            color: #8B4513;
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #FFD700;
+        }
+        
+        .modal .chicken-icon {
+            font-size: 60px;
+            margin: 15px 0;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .modal input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            border: 3px solid #8B4513;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Fredoka One', cursive;
+            text-align: center;
+        }
+        
+        .modal button, .tab-btn, .shop-btn {
+            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 4px 0 #2E7D32;
+            transition: all 0.1s;
+            margin: 5px;
+        }
+        
+        .modal button:hover, .tab-btn:hover, .shop-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #2E7D32;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        #gameOverModal .modal {
+            background: linear-gradient(180deg, #FFB6C1 0%, #FFA07A 100%);
+        }
+        
+        #startModal .modal {
+            background: linear-gradient(180deg, #87CEEB 0%, #98D8C8 100%);
+        }
+        
+        /* Нижнее меню */
+        .bottom-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #8B4513 0%, #654321 100%);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 50;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.3);
+        }
+        
+        .menu-btn {
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+            color: #8B4513;
+            box-shadow: 0 3px 0 #B8860B;
+            transition: all 0.1s;
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(2px);
+            box-shadow: 0 1px 0 #B8860B;
+        }
+        
+        .menu-btn.active {
+            background: linear-gradient(180deg, #FF6347 0%, #FF4500 100%);
+            color: white;
+            box-shadow: 0 3px 0 #8B0000;
+        }
+        
+        /* Статистика сверху */
+        .top-stats {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 40;
+            pointer-events: none;
+        }
+        
+        .stat-box {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        /* Секции */
+        .section {
+            padding: 20px;
+            padding-bottom: 80px;
+            min-height: 100vh;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #8B4513;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 0 #FFD700;
+        }
+        
+        /* Магазин */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .shop-item {
+            background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
+            border: 3px solid #8B4513;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .shop-item:hover {
+            transform: scale(1.05);
+        }
+        
+        .shop-item.owned {
+            border-color: #4CAF50;
+            background: linear-gradient(180deg, #90EE90 0%, #98FB98 100%);
+        }
+        
+        .shop-item.equipped {
+            border-color: #FFD700;
+            box-shadow: 0 0 20px #FFD700;
+        }
+        
+        .shop-item .item-preview {
+            font-size: 50px;
+            margin: 10px 0;
+        }
+        
+        .shop-item .item-name {
+            color: #8B4513;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .shop-item .item-price {
+            color: #B8860B;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        .shop-btn {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .shop-btn.buy {
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+            color: #8B4513;
+            box-shadow: 0 3px 0 #B8860B;
+        }
+        
+        .shop-btn.equip {
+            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
+        }
+        
+        .shop-btn.equipped {
+            background: linear-gradient(180deg, #9E9E9E 0%, #757575 100%);
+            box-shadow: 0 3px 0 #616161;
+        }
+        
+        /* Лидерборд */
+        .leaderboard-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+        
+        .tab-btn.active {
+            background: linear-gradient(180deg, #FF6347 0%, #FF4500 100%);
+            box-shadow: 0 4px 0 #8B0000;
+        }
+        
+        .leaderboard-list {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .leaderboard-item {
+            background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
+            border: 3px solid #8B4513;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .leaderboard-item.top-1 {
+            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
+            border-color: #B8860B;
+        }
+        
+        .leaderboard-item.top-2 {
+            background: linear-gradient(180deg, #C0C0C0 0%, #A9A9A9 100%);
+        }
+        
+        .leaderboard-item.top-3 {
+            background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%);
+            color: white;
+        }
+        
+        .rank {
+            font-size: 1.5rem;
+            width: 40px;
+            text-align: center;
+        }
+        
+        .player-info {
+            flex: 1;
+        }
+        
+        .player-name {
+            font-size: 1.1rem;
+            color: #8B4513;
+        }
+        
+        .player-score {
+            font-size: 1.3rem;
+            color: #B8860B;
+        }
+        
+        .coins-display {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #FFD700;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2rem;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .game-container {
+            padding-bottom: 70px;
+        }
+        
+        /* Категории магазина */
+        .shop-category {
+            margin-bottom: 30px;
+        }
+        
+        .category-title {
+            color: #8B4513;
+            font-size: 1.5rem;
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 10px;
+        }
+        
+        /* Панель старта */
+        .game-container {
+            position: relative;
+        }
+        
+        .start-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 248, 220, 0.95);
+            border: 4px solid #8B4513;
+            border-radius: 20px;
+            padding: 25px 35px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 30;
+        }
+        
+        .start-panel h2 {
+            color: #8B4513;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-shadow: 1px 1px 0 #FFD700;
+        }
+        
+        .start-info {
+            background: rgba(139, 69, 19, 0.1);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .start-info p {
+            color: #555;
+            font-size: 0.9rem;
+            margin: 5px 0;
+        }
+        
+        .best-score-text {
+            color: #B8860B;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+        
+        .best-score-text span {
+            font-size: 1.5rem;
+            color: #FF6347;
+        }
+        
+        .start-btn {
+            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 1.4rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            box-shadow: 0 5px 0 #2E7D32;
+            transition: all 0.1s;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #2E7D32;
+        }
+        
+        .start-btn:active {
+            transform: translateY(5px);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Отображение монет -->
+    <div class="coins-display" id="coinsDisplay">
+        <span>🪙</span>
+        <span id="coinsAmount">0</span>
+    </div>
+
+    <!-- Модальное окно для имени -->
+    <div id="nameModal" class="modal-overlay">
+        <div class="modal">
+            <h1>🌟 Happy Bird 🌟</h1>
+            <div class="chicken-icon">🐔</div>
+            <p style="color: #8B4513; font-size: 1.1rem; margin-bottom: 10px;">Привет! Дай имя своей курочке!</p>
+            <input type="text" id="chickenName" placeholder="Введи имя..." maxlength="15">
+            <br>
+            <button onclick="setChickenName()">Далее ➡️</button>
+        </div>
+    </div>
+    
+
+    
+    <!-- Модальное окно конца игры -->
+    <div id="gameOverModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h1>💔 Игра окончена!</h1>
+            <div class="chicken-icon">😢🐔</div>
+            <p id="finalScore" style="color: #8B4513; font-size: 1.3rem; margin: 15px 0;"></p>
+            <p id="earnedCoins" style="color: #B8860B; font-size: 1.2rem; margin-bottom: 10px;"></p>
+            <p id="newRecord" style="color: #FF6347; font-size: 1.1rem; margin-bottom: 10px; display: none;">🎉 НОВЫЙ РЕКОРД! 🎉</p>
+            <p id="bestScore" style="color: #666; margin-bottom: 20px;"></p>
+            <button onclick="restartGame()" style="font-size: 1.2rem; padding: 12px 35px;">▶️ Играть снова</button>
+            <button onclick="showStartScreen()" style="background: linear-gradient(180deg, #FF9800 0%, #F57C00 100%); font-size: 1rem; padding: 10px 25px; box-shadow: 0 4px 0 #E65100;">🏠 В меню</button>
+        </div>
+    </div>
+    
+    <!-- Секция игры -->
+    <div id="gameSection" class="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <!-- Панель старта поверх канваса -->
+        <div id="startPanel" class="start-panel">
+            <h2 id="chickenGreeting">🐔 Happy Bird 🐔</h2>
+            <div class="start-info">
+                <p>🎮 <strong>ПРОБЕЛ</strong> или <strong>ТАП</strong> для прыжка</p>
+                <p style="color: #4CAF50;">💰 +20 монет за очко!</p>
+            </div>
+            <p class="best-score-text">🏆 Рекорд: <span id="displayBestScore">0</span></p>
+            <button class="start-btn" onclick="startGame()">▶️ СТАРТ</button>
+        </div>
+    </div>
+    
+    <!-- Секция магазина -->
+    <div id="shopSection" class="section hidden">
+        <h1 class="section-title">🛒 Магазин</h1>
+        
+        <div class="shop-category">
+            <h2 class="category-title">🎨 Скины курочки</h2>
+            <div class="shop-grid" id="skinsGrid"></div>
+        </div>
+        
+        <div class="shop-category">
+            <h2 class="category-title">🎩 Шляпы</h2>
+            <div class="shop-grid" id="hatsGrid"></div>
+        </div>
+    </div>
+    
+    <!-- Секция лидерборда -->
+    <div id="leaderboardSection" class="section hidden">
+        <h1 class="section-title">🏆 Лидерборд</h1>
+        
+        <div class="leaderboard-tabs">
+            <button class="tab-btn active" onclick="showLeaderboard('week')">📅 Неделя</button>
+            <button class="tab-btn" onclick="showLeaderboard('month')">📆 Месяц</button>
+            <button class="tab-btn" onclick="showLeaderboard('year')">📊 Год</button>
+            <button class="tab-btn" onclick="showLeaderboard('all')">🌟 Все время</button>
+        </div>
+        
+        <div class="leaderboard-list" id="leaderboardList"></div>
+    </div>
+    
+    <!-- Нижнее меню -->
+    <div class="bottom-menu">
+        <button class="menu-btn active" onclick="showSection('game')">🎮 Игра</button>
+        <button class="menu-btn" onclick="showSection('shop')">🛒 Магазин</button>
+        <button class="menu-btn" onclick="showSection('leaderboard')">🏆 Рейтинг</button>
+    </div>
+    
+    <script>
+        // ==================== ДАННЫЕ ИГРЫ ====================
+        let gameData = {
+            chickenName: '',
+            coins: 0,
+            bestScore: 0,
+            equippedSkin: 'default',
+            equippedHat: 'none',
+            ownedSkins: ['default'],
+            ownedHats: ['none'],
+            scores: [] // {score, date}
+        };
+        
+        // Скины
+        const skins = [
+            { id: 'default', name: 'Обычная', price: 0, color: '#FFD700', bodyColor: '#FFD700', bellyColor: '#FFF8DC' },
+            { id: 'red', name: 'Красная', price: 200, color: '#FF6347', bodyColor: '#FF6347', bellyColor: '#FFB6C1' },
+            { id: 'blue', name: 'Голубая', price: 200, color: '#87CEEB', bodyColor: '#87CEEB', bellyColor: '#E0FFFF' },
+            { id: 'green', name: 'Зелёная', price: 300, color: '#90EE90', bodyColor: '#90EE90', bellyColor: '#F0FFF0' },
+            { id: 'purple', name: 'Фиолетовая', price: 300, color: '#DDA0DD', bodyColor: '#DDA0DD', bellyColor: '#E6E6FA' },
+            { id: 'golden', name: 'Золотая', price: 500, color: '#FFD700', bodyColor: '#FFD700', bellyColor: '#FFFACD', special: true },
+            { id: 'rainbow', name: 'Радужная', price: 1000, color: 'rainbow', bodyColor: '#FF69B4', bellyColor: '#FFE4E1', special: true },
+            { id: 'dark', name: 'Тёмная', price: 800, color: '#4A4A4A', bodyColor: '#4A4A4A', bellyColor: '#6A6A6A' }
+        ];
+        
+        // Шляпы
+        const hats = [
+            { id: 'none', name: 'Без шляпы', price: 0, emoji: '❌' },
+            { id: 'crown', name: 'Корона', price: 500, emoji: '👑' },
+            { id: 'tophat', name: 'Цилиндр', price: 300, emoji: '🎩' },
+            { id: 'cap', name: 'Кепка', price: 200, emoji: '🧢' },
+            { id: 'wizard', name: 'Волшебная', price: 600, emoji: '🪄' },
+            { id: 'party', name: 'Праздничная', price: 250, emoji: '🎉' },
+            { id: 'santa', name: 'Новогодняя', price: 400, emoji: '🎅' },
+            { id: 'cowboy', name: 'Ковбойская', price: 350, emoji: '🤠' }
+        ];
+        
+        // Загрузка данных
+        function loadGameData() {
+            const saved = localStorage.getItem('happyBirdData');
+            if (saved) {
+                gameData = JSON.parse(saved);
+            }
+            updateCoinsDisplay();
+        }
+        
+        // Сохранение данных
+        function saveGameData() {
+            localStorage.setItem('happyBirdData', JSON.stringify(gameData));
+        }
+        
+        // Обновление отображения монет
+        function updateCoinsDisplay() {
+            document.getElementById('coinsAmount').textContent = gameData.coins;
+        }
+        
+        // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = Math.min(480, window.innerWidth);
+        canvas.height = Math.min(560, window.innerHeight - 70);
+        
+        let gameStarted = false;
+        let gameOver = false;
+        let score = 0;
+        let frameCount = 0;
+        let currentSection = 'game';
+        
+        const chicken = {
+            x: 80,
+            y: canvas.height / 2,
+            width: 50,
+            height: 40,
+            velocity: 0,
+            gravity: 0.5,
+            jump: -9,
+            rotation: 0
+        };
+        
+        let pipes = [];
+        const pipeWidth = 70;
+        const pipeGap = 180;
+        const pipeSpeed = 3;
+        
+        let clouds = [];
+        for (let i = 0; i < 5; i++) {
+            clouds.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * (canvas.height / 3),
+                size: 30 + Math.random() * 40,
+                speed: 0.5 + Math.random() * 0.5
+            });
+        }
+        
+        const ground = {
+            y: canvas.height - 80,
+            height: 80
+        };
+        
+        // ==================== НАВИГАЦИЯ ====================
+        function showSection(section) {
+            currentSection = section;
+            
+            document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            document.getElementById('gameSection').classList.add('hidden');
+            document.getElementById('shopSection').classList.add('hidden');
+            document.getElementById('leaderboardSection').classList.add('hidden');
+            
+            if (section === 'game') {
+                document.getElementById('gameSection').classList.remove('hidden');
+            } else if (section === 'shop') {
+                document.getElementById('shopSection').classList.remove('hidden');
+                renderShop();
+            } else if (section === 'leaderboard') {
+                document.getElementById('leaderboardSection').classList.remove('hidden');
+                showLeaderboard('week');
+            }
+        }
+        
+        // ==================== МАГАЗИН ====================
+        function renderShop() {
+            // Скины
+            const skinsGrid = document.getElementById('skinsGrid');
+            skinsGrid.innerHTML = '';
+            
+            skins.forEach(skin => {
+                const owned = gameData.ownedSkins.includes(skin.id);
+                const equipped = gameData.equippedSkin === skin.id;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''}`;
+                
+                let previewStyle = `background: ${skin.bodyColor}; width: 60px; height: 60px; border-radius: 50%; margin: 0 auto;`;
+                if (skin.id === 'rainbow') {
+                    previewStyle = `background: linear-gradient(45deg, red, orange, yellow, green, blue, purple); width: 60px; height: 60px; border-radius: 50%; margin: 0 auto;`;
+                }
+                
+                item.innerHTML = `
+                    <div class="item-preview" style="${previewStyle}"></div>
+                    <div class="item-name">${skin.name}</div>
+                    <div class="item-price">${skin.price === 0 ? 'Бесплатно' : '🪙 ' + skin.price}</div>
+                    ${owned 
+                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipSkin('${skin.id}')">${equipped ? 'Надето' : 'Надеть'}</button>`
+                        : `<button class="shop-btn buy" onclick="buySkin('${skin.id}')">Купить</button>`
+                    }
+                `;
+                skinsGrid.appendChild(item);
+            });
+            
+            // Шляпы
+            const hatsGrid = document.getElementById('hatsGrid');
+            hatsGrid.innerHTML = '';
+            
+            hats.forEach(hat => {
+                const owned = gameData.ownedHats.includes(hat.id);
+                const equipped = gameData.equippedHat === hat.id;
+                
+                const item = document.createElement('div');
+                item.className = `shop-item ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''}`;
+                
+                item.innerHTML = `
+                    <div class="item-preview">${hat.emoji}</div>
+                    <div class="item-name">${hat.name}</div>
+                    <div class="item-price">${hat.price === 0 ? 'Бесплатно' : '🪙 ' + hat.price}</div>
+                    ${owned 
+                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipHat('${hat.id}')">${equipped ? 'Надето' : 'Надеть'}</button>`
+                        : `<button class="shop-btn buy" onclick="buyHat('${hat.id}')">Купить</button>`
+                    }
+                `;
+                hatsGrid.appendChild(item);
+            });
+        }
+        
+        function buySkin(skinId) {
+            const skin = skins.find(s => s.id === skinId);
+            if (gameData.coins >= skin.price) {
+                gameData.coins -= skin.price;
+                gameData.ownedSkins.push(skinId);
+                gameData.equippedSkin = skinId;
+                saveGameData();
+                updateCoinsDisplay();
+                renderShop();
+            } else {
+                alert('Недостаточно монет! 🪙');
+            }
+        }
+        
+        function equipSkin(skinId) {
+            gameData.equippedSkin = skinId;
+            saveGameData();
+            renderShop();
+        }
+        
+        function buyHat(hatId) {
+            const hat = hats.find(h => h.id === hatId);
+            if (gameData.coins >= hat.price) {
+                gameData.coins -= hat.price;
+                gameData.ownedHats.push(hatId);
+                gameData.equippedHat = hatId;
+                saveGameData();
+                updateCoinsDisplay();
+                renderShop();
+            } else {
+                alert('Недостаточно монет! 🪙');
+            }
+        }
+        
+        function equipHat(hatId) {
+            gameData.equippedHat = hatId;
+            saveGameData();
+            renderShop();
+        }
+        
+        // ==================== ЛИДЕРБОРД ====================
+        function showLeaderboard(period) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const now = new Date();
+            let filteredScores = gameData.scores.filter(s => {
+                const scoreDate = new Date(s.date);
+                if (period === 'week') {
+                    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+                    return scoreDate >= weekAgo;
+                } else if (period === 'month') {
+                    const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+                    return scoreDate >= monthAgo;
+                } else if (period === 'year') {
+                    const yearAgo = new Date(now - 365 * 24 * 60 * 60 * 1000);
+                    return scoreDate >= yearAgo;
+                }
+                return true; // all time
+            });
+            
+            // Сортировка по убыванию
+            filteredScores.sort((a, b) => b.score - a.score);
+            
+            // Показываем топ 10
+            const top10 = filteredScores.slice(0, 10);
+            
+            const list = document.getElementById('leaderboardList');
+            
+            if (top10.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #8B4513; padding: 40px;">Пока нет результатов. Сыграй и попади в рейтинг! 🎮</p>';
+                return;
+            }
+            
+            list.innerHTML = top10.map((entry, index) => {
+                let rankClass = '';
+                let rankEmoji = index + 1;
+                if (index === 0) { rankClass = 'top-1'; rankEmoji = '🥇'; }
+                else if (index === 1) { rankClass = 'top-2'; rankEmoji = '🥈'; }
+                else if (index === 2) { rankClass = 'top-3'; rankEmoji = '🥉'; }
+                
+                const date = new Date(entry.date).toLocaleDateString('ru-RU');
+                
+                return `
+                    <div class="leaderboard-item ${rankClass}">
+                        <div class="rank">${rankEmoji}</div>
+                        <div class="player-info">
+                            <div class="player-name">🐔 ${gameData.chickenName}</div>
+                            <div style="font-size: 0.8rem; color: #666;">${date}</div>
+                        </div>
+                        <div class="player-score">${entry.score} 🏆</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        // ==================== ИГРА ====================
+        function setChickenName() {
+            const nameInput = document.getElementById('chickenName').value.trim();
+            if (nameInput.length === 0) {
+                gameData.chickenName = 'Курочка';
+            } else {
+                gameData.chickenName = nameInput;
+            }
+            saveGameData();
+            document.getElementById('nameModal').classList.add('hidden');
+            updateStartPanel();
+        }
+        
+        function updateStartPanel() {
+            document.getElementById('chickenGreeting').innerHTML = `🐔 ${gameData.chickenName} 🐔`;
+            document.getElementById('displayBestScore').textContent = gameData.bestScore;
+            document.getElementById('startPanel').classList.remove('hidden');
+        }
+        
+        document.getElementById('chickenName').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') setChickenName();
+        });
+        
+        function startGame() {
+            document.getElementById('startPanel').classList.add('hidden');
+            gameStarted = true;
+            gameOver = false;
+            score = 0;
+            pipes = [];
+            chicken.y = canvas.height / 2;
+            chicken.velocity = 0;
+            gameLoop();
+        }
+        
+        function restartGame() {
+            document.getElementById('gameOverModal').classList.add('hidden');
+            gameStarted = true;
+            gameOver = false;
+            score = 0;
+            pipes = [];
+            chicken.y = canvas.height / 2;
+            chicken.velocity = 0;
+            gameLoop();
+        }
+        
+        function flap() {
+            if (gameStarted && !gameOver && currentSection === 'game') {
+                chicken.velocity = chicken.jump;
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault();
+                flap();
+            }
+        });
+        
+        canvas.addEventListener('click', flap);
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            flap();
+        });
+        
+        function createPipe() {
+            const minHeight = 80;
+            const maxHeight = canvas.height - ground.height - pipeGap - minHeight;
+            const topHeight = minHeight + Math.random() * maxHeight;
+            
+            pipes.push({
+                x: canvas.width,
+                topHeight: topHeight,
+                bottomY: topHeight + pipeGap,
+                passed: false
+            });
+        }
+        
+        // ==================== ОТРИСОВКА ====================
+        function drawBackground() {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#87CEEB');
+            gradient.addColorStop(0.7, '#98D8C8');
+            gradient.addColorStop(1, '#90EE90');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(canvas.width - 60, 60, 40, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#FFF8DC';
+            ctx.beginPath();
+            ctx.arc(canvas.width - 65, 55, 30, 0, Math.PI * 2);
+            ctx.fill();
+            
+            clouds.forEach(cloud => {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.beginPath();
+                ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.size * 0.6, cloud.y - cloud.size * 0.2, cloud.size * 0.7, 0, Math.PI * 2);
+                ctx.arc(cloud.x + cloud.size, cloud.y, cloud.size * 0.8, 0, Math.PI * 2);
+                ctx.fill();
+                
+                cloud.x -= cloud.speed;
+                if (cloud.x + cloud.size * 2 < 0) {
+                    cloud.x = canvas.width + cloud.size;
+                    cloud.y = Math.random() * (canvas.height / 3);
+                }
+            });
+        }
+        
+        function drawGround() {
+            ctx.fillStyle = '#228B22';
+            ctx.fillRect(0, ground.y, canvas.width, 20);
+            ctx.fillStyle = '#8B4513';
+            ctx.fillRect(0, ground.y + 20, canvas.width, ground.height - 20);
+            ctx.fillStyle = '#A0522D';
+            for (let i = 0; i < canvas.width; i += 30) {
+                ctx.fillRect(i, ground.y + 25, 20, 10);
+                ctx.fillRect(i + 15, ground.y + 45, 20, 10);
+            }
+        }
+        
+        function drawPipes() {
+            pipes.forEach(pipe => {
+                const pipeGradient = ctx.createLinearGradient(pipe.x, 0, pipe.x + pipeWidth, 0);
+                pipeGradient.addColorStop(0, '#228B22');
+                pipeGradient.addColorStop(0.5, '#32CD32');
+                pipeGradient.addColorStop(1, '#228B22');
+                
+                ctx.fillStyle = pipeGradient;
+                ctx.fillRect(pipe.x, 0, pipeWidth, pipe.topHeight);
+                
+                ctx.fillStyle = '#006400';
+                ctx.fillRect(pipe.x - 5, pipe.topHeight - 30, pipeWidth + 10, 30);
+                ctx.fillStyle = '#32CD32';
+                ctx.fillRect(pipe.x - 3, pipe.topHeight - 28, pipeWidth + 6, 26);
+                
+                ctx.fillStyle = pipeGradient;
+                ctx.fillRect(pipe.x, pipe.bottomY, pipeWidth, canvas.height - pipe.bottomY - ground.height);
+                
+                ctx.fillStyle = '#006400';
+                ctx.fillRect(pipe.x - 5, pipe.bottomY, pipeWidth + 10, 30);
+                ctx.fillStyle = '#32CD32';
+                ctx.fillRect(pipe.x - 3, pipe.bottomY + 2, pipeWidth + 6, 26);
+            });
+        }
+        
+        function drawChicken() {
+            const skin = skins.find(s => s.id === gameData.equippedSkin) || skins[0];
+            const hat = hats.find(h => h.id === gameData.equippedHat);
+            
+            ctx.save();
+            ctx.translate(chicken.x + chicken.width / 2, chicken.y + chicken.height / 2);
+            
+            chicken.rotation = Math.min(Math.max(chicken.velocity * 3, -30), 90);
+            ctx.rotate(chicken.rotation * Math.PI / 180);
+            
+            // Тело
+            if (skin.id === 'rainbow') {
+                const rainbowGradient = ctx.createLinearGradient(-chicken.width/2, 0, chicken.width/2, 0);
+                rainbowGradient.addColorStop(0, '#FF0000');
+                rainbowGradient.addColorStop(0.2, '#FF7F00');
+                rainbowGradient.addColorStop(0.4, '#FFFF00');
+                rainbowGradient.addColorStop(0.6, '#00FF00');
+                rainbowGradient.addColorStop(0.8, '#0000FF');
+                rainbowGradient.addColorStop(1, '#8B00FF');
+                ctx.fillStyle = rainbowGradient;
+            } else {
+                ctx.fillStyle = skin.bodyColor;
+            }
+            ctx.beginPath();
+            ctx.ellipse(0, 0, chicken.width / 2, chicken.height / 2, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Живот
+            ctx.fillStyle = skin.bellyColor;
+            ctx.beginPath();
+            ctx.ellipse(5, 5, chicken.width / 3, chicken.height / 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Крыло
+            ctx.fillStyle = skin.id === 'rainbow' ? '#FF69B4' : '#DAA520';
+            ctx.beginPath();
+            const wingFlap = Math.sin(frameCount * 0.3) * 5;
+            ctx.ellipse(-5, wingFlap, 12, 18, -0.3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Глаз
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(15, -8, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'black';
+            ctx.beginPath();
+            ctx.arc(18, -8, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(19, -10, 2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Клюв
+            ctx.fillStyle = '#FF6347';
+            ctx.beginPath();
+            ctx.moveTo(20, 0);
+            ctx.lineTo(35, 0);
+            ctx.lineTo(20, 8);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Гребешок
+            ctx.fillStyle = '#FF4500';
+            ctx.beginPath();
+            ctx.arc(5, -22, 6, 0, Math.PI * 2);
+            ctx.arc(-3, -20, 5, 0, Math.PI * 2);
+            ctx.arc(12, -20, 5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Бородка
+            ctx.fillStyle = '#FF4500';
+            ctx.beginPath();
+            ctx.arc(20, 12, 5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Шляпа
+            if (hat && hat.id !== 'none') {
+                ctx.font = '25px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(hat.emoji, 0, -30);
+            }
+            
+            ctx.restore();
+        }
+        
+        function drawScore() {
+            ctx.fillStyle = 'white';
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 4;
+            ctx.font = 'bold 48px Fredoka One, Arial';
+            ctx.textAlign = 'center';
+            ctx.strokeText(score, canvas.width / 2, 60);
+            ctx.fillText(score, canvas.width / 2, 60);
+            
+            ctx.font = 'bold 18px Fredoka One, Arial';
+            ctx.strokeText(gameData.chickenName, canvas.width / 2, 85);
+            ctx.fillText(gameData.chickenName, canvas.width / 2, 85);
+        }
+        
+        function checkCollision() {
+            if (chicken.y + chicken.height > ground.y || chicken.y < 0) {
+                return true;
+            }
+            
+            for (let pipe of pipes) {
+                if (chicken.x + chicken.width > pipe.x && chicken.x < pipe.x + pipeWidth) {
+                    if (chicken.y < pipe.topHeight || chicken.y + chicken.height > pipe.bottomY) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        function update() {
+            frameCount++;
+            
+            chicken.velocity += chicken.gravity;
+            chicken.y += chicken.velocity;
+            
+            if (frameCount % 100 === 0) {
+                createPipe();
+            }
+            
+            pipes.forEach(pipe => {
+                pipe.x -= pipeSpeed;
+                
+                if (!pipe.passed && pipe.x + pipeWidth < chicken.x) {
+                    pipe.passed = true;
+                    score++;
+                    gameData.coins += 20;
+                    updateCoinsDisplay();
+                }
+            });
+            
+            pipes = pipes.filter(pipe => pipe.x + pipeWidth > 0);
+            
+            if (checkCollision()) {
+                endGame();
+            }
+        }
+        
+        function endGame() {
+            gameOver = true;
+            gameStarted = false;
+            
+            // Сохраняем результат
+            gameData.scores.push({
+                score: score,
+                date: new Date().toISOString()
+            });
+            
+            const isNewRecord = score > gameData.bestScore;
+            if (isNewRecord) {
+                gameData.bestScore = score;
+            }
+            
+            saveGameData();
+            
+            const earnedCoins = score * 20;
+            document.getElementById('finalScore').textContent = `${gameData.chickenName} набрала ${score} очков!`;
+            document.getElementById('earnedCoins').textContent = `+${earnedCoins} монет! 🪙`;
+            document.getElementById('newRecord').style.display = isNewRecord ? 'block' : 'none';
+            document.getElementById('bestScore').textContent = `🏆 Лучший результат: ${gameData.bestScore}`;
+            document.getElementById('gameOverModal').classList.remove('hidden');
+        }
+        
+        function showStartScreen() {
+            document.getElementById('gameOverModal').classList.add('hidden');
+            updateStartPanel();
+            initialDraw();
+        }
+        
+        function draw() {
+            drawBackground();
+            drawPipes();
+            drawGround();
+            drawChicken();
+            drawScore();
+        }
+        
+        function gameLoop() {
+            if (!gameOver) {
+                update();
+                draw();
+                requestAnimationFrame(gameLoop);
+            }
+        }
+        
+        function initialDraw() {
+            drawBackground();
+            drawGround();
+        }
+        
+        // ==================== ИНИЦИАЛИЗАЦИЯ ====================
+        loadGameData();
+        
+        // Если имя уже есть, показываем стартовый экран
+        if (gameData.chickenName) {
+            document.getElementById('nameModal').classList.add('hidden');
+            updateStartPanel();
+        } else {
+            document.getElementById('startPanel').classList.add('hidden');
+        }
+        
+        initialDraw();
+        
+        window.addEventListener('resize', () => {
+            canvas.width = Math.min(480, window.innerWidth);
+            canvas.height = Math.min(560, window.innerHeight - 70);
+            ground.y = canvas.height - 80;
+            if (!gameStarted) {
+                initialDraw();
+            }
+        });
+    </script>
+</body>
+</html>

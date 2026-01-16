@@ -57,8 +57,6 @@
             border: 5px solid #8B4513;
             max-width: 350px;
             width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
         }
         
         .modal h1 {
@@ -77,6 +75,11 @@
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes tapHint {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 0.7; }
         }
         
         .modal input {
@@ -139,13 +142,13 @@
             border-radius: 10px;
             cursor: pointer;
             font-family: 'Fredoka One', cursive;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #8B4513;
             box-shadow: 0 3px 0 #B8860B;
             transition: all 0.1s;
             flex: 1;
             margin: 0 3px;
-            max-width: 120px;
+            max-width: 100px;
         }
         
         .menu-btn:hover {
@@ -165,7 +168,7 @@
             padding-top: 60px;
             padding-bottom: 100px;
             min-height: 100vh;
-            overflow-y: scroll;
+            overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
         
@@ -180,9 +183,9 @@
         /* Магазин */
         .shop-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 10px;
-            max-width: 600px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            max-width: 700px;
             margin: 0 auto;
         }
         
@@ -190,7 +193,7 @@
             background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
             border: 3px solid #8B4513;
             border-radius: 12px;
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             transition: transform 0.2s;
         }
@@ -210,25 +213,25 @@
         }
         
         .shop-item .item-preview {
-            font-size: 35px;
-            margin: 5px 0;
+            font-size: 40px;
+            margin: 8px 0;
         }
         
         .shop-item .item-name {
             color: #8B4513;
-            font-size: 0.75rem;
-            margin-bottom: 3px;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
         }
         
         .shop-item .item-price {
             color: #B8860B;
-            font-size: 0.8rem;
-            margin-bottom: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
         
         .shop-btn {
-            padding: 6px 10px;
-            font-size: 0.75rem;
+            padding: 8px 12px;
+            font-size: 0.8rem;
         }
         
         .shop-btn.buy {
@@ -246,75 +249,63 @@
             box-shadow: 0 3px 0 #616161;
         }
         
-        /* Лидерборд */
-        .leaderboard-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .tab-btn {
-            padding: 8px 12px;
-            font-size: 0.8rem;
-        }
-        
-        .tab-btn.active {
-            background: linear-gradient(180deg, #FF6347 0%, #FF4500 100%);
-            box-shadow: 0 4px 0 #8B0000;
-        }
-        
-        .leaderboard-list {
+        /* Статистика */
+        .stats-container {
             max-width: 500px;
             margin: 0 auto;
-            max-height: calc(100vh - 200px);
-            overflow-y: auto;
+            padding-top: 20px;
+            padding-bottom: 30px;
         }
         
-        .leaderboard-item {
+        .stats-card {
             background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
-            border: 3px solid #8B4513;
-            border-radius: 10px;
-            padding: 12px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            border: 4px solid #8B4513;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
         }
         
-        .leaderboard-item.top-1 {
-            background: linear-gradient(180deg, #FFD700 0%, #FFA500 100%);
-            border-color: #B8860B;
-        }
-        
-        .leaderboard-item.top-2 {
-            background: linear-gradient(180deg, #C0C0C0 0%, #A9A9A9 100%);
-        }
-        
-        .leaderboard-item.top-3 {
-            background: linear-gradient(180deg, #CD7F32 0%, #8B4513 100%);
-            color: white;
-        }
-        
-        .rank {
+        .stats-card h2 {
+            color: #8B4513;
             font-size: 1.3rem;
-            width: 35px;
+            margin-bottom: 15px;
             text-align: center;
         }
         
-        .player-info {
-            flex: 1;
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 2px dashed #DEB887;
         }
         
-        .player-name {
-            font-size: 1rem;
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
             color: #8B4513;
+            font-size: 1rem;
         }
         
-        .player-score {
+        .stat-value {
+            color: #FF6347;
             font-size: 1.1rem;
-            color: #B8860B;
+        }
+        
+        .recent-games {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .recent-game-item {
+            background: rgba(255,255,255,0.5);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         
         .coins-display {
@@ -332,6 +323,26 @@
             gap: 6px;
         }
         
+        .coins-plus-btn {
+            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 5px;
+            box-shadow: 0 2px 0 #2E7D32;
+        }
+        
+        .coins-plus-btn:hover {
+            transform: scale(1.1);
+        }
+        
         .game-container {
             padding-bottom: 70px;
             position: relative;
@@ -343,15 +354,22 @@
         
         /* Категории магазина */
         .shop-category {
-            margin-bottom: 25px;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+        }
+        
+        #shopSection, #statsSection, #questsSection {
+            height: 100vh;
+            overflow-y: scroll !important;
+            -webkit-overflow-scrolling: touch;
         }
         
         .category-title {
             color: #8B4513;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
             text-align: center;
-            margin-bottom: 12px;
-            padding: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
             background: rgba(255,255,255,0.5);
             border-radius: 10px;
         }
@@ -422,11 +440,6 @@
             box-shadow: 0 2px 0 #2E7D32;
         }
         
-        .start-btn:active {
-            transform: translateY(5px);
-            box-shadow: none;
-        }
-        
         .reset-btn {
             position: fixed;
             top: 10px;
@@ -441,13 +454,192 @@
             z-index: 60;
         }
         
-        /* Цветные превью скинов */
+        /* Превью скинов */
         .skin-preview {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            margin: 5px auto;
+            margin: 8px auto;
             border: 3px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        
+        /* Превью шляп */
+        .hat-preview {
+            width: 60px;
+            height: 60px;
+            margin: 8px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        /* Квесты */
+        .quests-container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding-top: 20px;
+            padding-bottom: 30px;
+        }
+        
+        .quest-card {
+            background: linear-gradient(180deg, #FFF8DC 0%, #FFE4B5 100%);
+            border: 4px solid #8B4513;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quest-card.completed {
+            border-color: #4CAF50;
+            background: linear-gradient(180deg, #90EE90 0%, #98FB98 100%);
+        }
+        
+        .quest-card.claimed {
+            border-color: #9E9E9E;
+            background: linear-gradient(180deg, #E0E0E0 0%, #BDBDBD 100%);
+            opacity: 0.7;
+        }
+        
+        .quest-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .quest-icon {
+            font-size: 2.5rem;
+        }
+        
+        .quest-info {
+            flex: 1;
+        }
+        
+        .quest-title {
+            color: #8B4513;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+        
+        .quest-desc {
+            color: #666;
+            font-size: 0.85rem;
+        }
+        
+        .quest-progress {
+            background: rgba(139, 69, 19, 0.2);
+            border-radius: 10px;
+            height: 20px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quest-progress-bar {
+            background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8B4513;
+            font-size: 0.75rem;
+        }
+        
+        .quest-reward {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .quest-reward-text {
+            color: #B8860B;
+            font-size: 1rem;
+        }
+        
+        .quest-claim-btn {
+            background: linear-gradient(180deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+            box-shadow: 0 3px 0 #2E7D32;
+        }
+        
+        .quest-claim-btn:disabled {
+            background: linear-gradient(180deg, #9E9E9E 0%, #757575 100%);
+            box-shadow: 0 3px 0 #616161;
+            cursor: not-allowed;
+        }
+        
+        .quest-claim-btn.claimed {
+            background: linear-gradient(180deg, #9E9E9E 0%, #757575 100%);
+        }
+        
+        /* Модальное окно покупки монет */
+        #buyCoinsModal .modal {
+            background: linear-gradient(180deg, #E8F5E9 0%, #C8E6C9 100%);
+        }
+        
+        .buy-coins-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 3px solid #4CAF50;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-family: 'Fredoka One', cursive;
+            text-align: center;
+        }
+        
+        .code-status {
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .code-status.success {
+            background: rgba(76, 175, 80, 0.3);
+            color: #2E7D32;
+        }
+        
+        .code-status.error {
+            background: rgba(244, 67, 54, 0.3);
+            color: #C62828;
+        }
+        
+        /* Подсказка тапа */
+        .tap-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 25;
+            pointer-events: none;
+        }
+        
+        .tap-hint .finger {
+            font-size: 80px;
+            animation: tapHint 1s ease-in-out infinite;
+        }
+        
+        .tap-hint .tap-text {
+            color: white;
+            font-size: 1.2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -459,6 +651,7 @@
     <div class="coins-display" id="coinsDisplay">
         <span>🪙</span>
         <span id="coinsAmount">0</span>
+        <button class="coins-plus-btn" onclick="openBuyCoinsModal()">+</button>
     </div>
 
     <!-- Модальное окно для имени -->
@@ -487,11 +680,35 @@
         </div>
     </div>
     
+    <!-- Модальное окно покупки монет -->
+    <div id="buyCoinsModal" class="modal-overlay hidden">
+        <div class="modal">
+            <h1>🪙 Купить монеты</h1>
+            <p style="color: #8B4513; font-size: 0.9rem; margin-bottom: 15px;">Введите секретный код для доступа</p>
+            <input type="text" class="buy-coins-input" id="secretCodeInput" placeholder="Введите код...">
+            <div id="codeStatus" class="code-status hidden"></div>
+            <div id="coinsAmountSection" class="hidden">
+                <p style="color: #4CAF50; font-size: 1rem; margin: 10px 0;">✅ Код принят! Сколько монет?</p>
+                <input type="number" class="buy-coins-input" id="coinsAmountInput" placeholder="Количество монет" min="1" max="999999">
+                <button onclick="addCoins()" style="width: 100%;">💰 Получить монеты</button>
+            </div>
+            <br>
+            <button onclick="checkSecretCode()" id="checkCodeBtn">🔓 Проверить код</button>
+            <button onclick="closeBuyCoinsModal()" style="background: linear-gradient(180deg, #9E9E9E 0%, #757575 100%); box-shadow: 0 4px 0 #616161;">❌ Закрыть</button>
+        </div>
+    </div>
+    
     <!-- Секция игры -->
     <div id="gameSection" class="game-container">
         <canvas id="gameCanvas"></canvas>
         
-        <!-- Панель старта поверх канваса -->
+        <!-- Подсказка тапа -->
+        <div id="tapHint" class="tap-hint hidden">
+            <div class="finger">👆</div>
+            <div class="tap-text">Тапни чтобы начать!</div>
+        </div>
+        
+        <!-- Панель старта -->
         <div id="startPanel" class="start-panel">
             <h2 id="chickenGreeting">🐔 Happy Bird 🐔</h2>
             <div class="start-info">
@@ -508,35 +725,68 @@
         <h1 class="section-title">🛒 Магазин</h1>
         
         <div class="shop-category">
-            <h2 class="category-title">🎨 Скины курочки</h2>
+            <h2 class="category-title">🎨 Цвета курочки</h2>
             <div class="shop-grid" id="skinsGrid"></div>
         </div>
         
         <div class="shop-category">
-            <h2 class="category-title">🎩 Аксессуары</h2>
+            <h2 class="category-title">🎩 Шляпы</h2>
             <div class="shop-grid" id="hatsGrid"></div>
         </div>
     </div>
     
-    <!-- Секция лидерборда -->
-    <div id="leaderboardSection" class="section hidden">
-        <h1 class="section-title">🏆 Лидерборд</h1>
+    <!-- Секция квестов -->
+    <div id="questsSection" class="section hidden">
+        <h1 class="section-title">🎯 Квесты</h1>
+        <div class="quests-container" id="questsContainer"></div>
+    </div>
+    
+    <!-- Секция статистики -->
+    <div id="statsSection" class="section hidden">
+        <h1 class="section-title">📊 Статистика</h1>
         
-        <div class="leaderboard-tabs">
-            <button class="tab-btn active" onclick="showLeaderboard('week')">📅 Неделя</button>
-            <button class="tab-btn" onclick="showLeaderboard('month')">📆 Месяц</button>
-            <button class="tab-btn" onclick="showLeaderboard('year')">📊 Год</button>
-            <button class="tab-btn" onclick="showLeaderboard('all')">🌟 Всё время</button>
+        <div class="stats-container">
+            <div class="stats-card">
+                <h2>🐔 <span id="statsName">Курочка</span></h2>
+                <div class="stat-row">
+                    <span class="stat-label">🏆 Лучший результат</span>
+                    <span class="stat-value" id="statsBest">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🎮 Всего игр</span>
+                    <span class="stat-value" id="statsTotalGames">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">⭐ Всего очков</span>
+                    <span class="stat-value" id="statsTotalScore">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">📈 Среднее очков</span>
+                    <span class="stat-value" id="statsAverage">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🪙 Всего монет</span>
+                    <span class="stat-value" id="statsTotalCoins">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">🛍️ Куплено предметов</span>
+                    <span class="stat-value" id="statsItems">0</span>
+                </div>
+            </div>
+            
+            <div class="stats-card">
+                <h2>📜 Последние игры</h2>
+                <div class="recent-games" id="recentGames"></div>
+            </div>
         </div>
-        
-        <div class="leaderboard-list" id="leaderboardList"></div>
     </div>
     
     <!-- Нижнее меню -->
     <div class="bottom-menu">
         <button class="menu-btn active" onclick="showSection('game')">🎮 Игра</button>
         <button class="menu-btn" onclick="showSection('shop')">🛒 Магазин</button>
-        <button class="menu-btn" onclick="showSection('leaderboard')">🏆 Рейтинг</button>
+        <button class="menu-btn" onclick="showSection('quests')">🎯 Квесты</button>
+        <button class="menu-btn" onclick="showSection('stats')">📊 Стат</button>
     </div>
     
     <script>
@@ -544,47 +794,94 @@
         let gameData = {
             chickenName: '',
             coins: 0,
+            totalCoinsEarned: 0,
             bestScore: 0,
             equippedSkin: 'default',
             equippedHat: 'none',
             ownedSkins: ['default'],
             ownedHats: ['none'],
-            scores: []
+            scores: [],
+            questsProgress: {
+                firstGame: { progress: 0, claimed: false },
+                score10: { progress: 0, claimed: false },
+                score50: { progress: 0, claimed: false },
+                games10: { progress: 0, claimed: false }
+            }
         };
         
-        // Расширенные скины (15 штук)
-        const skins = [
-            { id: 'default', name: 'Обычная', price: 0, bodyColor: '#FFD700', bellyColor: '#FFF8DC' },
-            { id: 'red', name: 'Красная', price: 100, bodyColor: '#FF6347', bellyColor: '#FFB6C1' },
-            { id: 'blue', name: 'Голубая', price: 100, bodyColor: '#4A90D9', bellyColor: '#B0D4F1' },
-            { id: 'green', name: 'Зелёная', price: 150, bodyColor: '#32CD32', bellyColor: '#90EE90' },
-            { id: 'purple', name: 'Фиолетовая', price: 150, bodyColor: '#9370DB', bellyColor: '#DDA0DD' },
-            { id: 'pink', name: 'Розовая', price: 150, bodyColor: '#FF69B4', bellyColor: '#FFB6C1' },
-            { id: 'orange', name: 'Оранжевая', price: 200, bodyColor: '#FF8C00', bellyColor: '#FFDAB9' },
-            { id: 'cyan', name: 'Бирюзовая', price: 200, bodyColor: '#00CED1', bellyColor: '#E0FFFF' },
-            { id: 'lime', name: 'Лаймовая', price: 200, bodyColor: '#ADFF2F', bellyColor: '#F0FFF0' },
-            { id: 'coral', name: 'Коралловая', price: 250, bodyColor: '#FF7F50', bellyColor: '#FFE4E1' },
-            { id: 'gold', name: 'Золотая', price: 500, bodyColor: '#FFD700', bellyColor: '#FFFACD', special: true },
-            { id: 'silver', name: 'Серебряная', price: 400, bodyColor: '#C0C0C0', bellyColor: '#E8E8E8' },
-            { id: 'dark', name: 'Тёмная', price: 350, bodyColor: '#2F2F2F', bellyColor: '#4F4F4F' },
-            { id: 'rainbow', name: 'Радужная', price: 1000, bodyColor: 'rainbow', bellyColor: '#FFE4E1', special: true },
-            { id: 'galaxy', name: 'Галактика', price: 800, bodyColor: '#1a1a2e', bellyColor: '#4a4a6a', special: true }
+        // Квесты
+        const quests = [
+            {
+                id: 'firstGame',
+                icon: '🎮',
+                title: 'Первый полёт!',
+                desc: 'Сыграй свою первую игру',
+                target: 1,
+                reward: 100,
+                getProgress: () => gameData.scores.length >= 1 ? 1 : 0
+            },
+            {
+                id: 'score10',
+                icon: '⭐',
+                title: 'Начинающий',
+                desc: 'Набери 10 очков за одну игру',
+                target: 10,
+                reward: 200,
+                getProgress: () => Math.min(gameData.bestScore, 10)
+            },
+            {
+                id: 'score50',
+                icon: '🏆',
+                title: 'Мастер',
+                desc: 'Набери 50 очков за одну игру',
+                target: 50,
+                reward: 500,
+                getProgress: () => Math.min(gameData.bestScore, 50)
+            },
+            {
+                id: 'games10',
+                icon: '🔥',
+                title: 'Увлечённый',
+                desc: 'Сыграй 10 игр',
+                target: 10,
+                reward: 300,
+                getProgress: () => Math.min(gameData.scores.length, 10)
+            }
         ];
         
-        // Расширенные аксессуары (12 штук)
+        // Цвета/Скины курочки (15 штук)
+        const skins = [
+            { id: 'default', name: 'Жёлтая', price: 0, bodyColor: '#FFD700', bellyColor: '#FFF8DC' },
+            { id: 'red', name: 'Красная', price: 80, bodyColor: '#FF6347', bellyColor: '#FFB6C1' },
+            { id: 'blue', name: 'Голубая', price: 80, bodyColor: '#4A90D9', bellyColor: '#B0D4F1' },
+            { id: 'green', name: 'Зелёная', price: 100, bodyColor: '#32CD32', bellyColor: '#90EE90' },
+            { id: 'purple', name: 'Фиолетовая', price: 100, bodyColor: '#9370DB', bellyColor: '#DDA0DD' },
+            { id: 'pink', name: 'Розовая', price: 100, bodyColor: '#FF69B4', bellyColor: '#FFB6C1' },
+            { id: 'orange', name: 'Оранжевая', price: 120, bodyColor: '#FF8C00', bellyColor: '#FFDAB9' },
+            { id: 'cyan', name: 'Бирюзовая', price: 120, bodyColor: '#00CED1', bellyColor: '#E0FFFF' },
+            { id: 'lime', name: 'Лаймовая', price: 150, bodyColor: '#ADFF2F', bellyColor: '#F0FFF0' },
+            { id: 'coral', name: 'Коралловая', price: 150, bodyColor: '#FF7F50', bellyColor: '#FFE4E1' },
+            { id: 'mint', name: 'Мятная', price: 180, bodyColor: '#98FF98', bellyColor: '#F0FFF0' },
+            { id: 'peach', name: 'Персиковая', price: 180, bodyColor: '#FFCBA4', bellyColor: '#FFF0E0' },
+            { id: 'silver', name: 'Серебряная', price: 300, bodyColor: '#C0C0C0', bellyColor: '#E8E8E8' },
+            { id: 'gold', name: 'Золотая', price: 500, bodyColor: '#FFD700', bellyColor: '#FFFACD', special: true },
+            { id: 'rainbow', name: 'Радужная', price: 1000, bodyColor: 'rainbow', bellyColor: '#FFE4E1', special: true }
+        ];
+        
+        // Шляпы (12 штук)
         const hats = [
-            { id: 'none', name: 'Нет', price: 0, emoji: '❌' },
-            { id: 'crown', name: 'Корона', price: 500, emoji: '👑' },
-            { id: 'tophat', name: 'Цилиндр', price: 300, emoji: '🎩' },
+            { id: 'none', name: 'Без шляпы', price: 0, emoji: '❌' },
+            { id: 'crown', name: 'Корона', price: 300, emoji: '👑' },
+            { id: 'tophat', name: 'Цилиндр', price: 200, emoji: '🎩' },
             { id: 'cap', name: 'Кепка', price: 150, emoji: '🧢' },
-            { id: 'party', name: 'Праздник', price: 200, emoji: '🎉' },
-            { id: 'santa', name: 'Санта', price: 350, emoji: '🎅' },
-            { id: 'cowboy', name: 'Ковбой', price: 300, emoji: '🤠' },
-            { id: 'angel', name: 'Ангел', price: 450, emoji: '😇' },
-            { id: 'devil', name: 'Демон', price: 450, emoji: '😈' },
-            { id: 'star', name: 'Звезда', price: 250, emoji: '⭐' },
-            { id: 'heart', name: 'Сердце', price: 200, emoji: '❤️' },
-            { id: 'fire', name: 'Огонь', price: 400, emoji: '🔥' }
+            { id: 'party', name: 'Праздничная', price: 180, emoji: '🎉' },
+            { id: 'santa', name: 'Санта', price: 250, emoji: '🎅' },
+            { id: 'cowboy', name: 'Ковбойская', price: 220, emoji: '🤠' },
+            { id: 'wizard', name: 'Волшебная', price: 350, emoji: '🧙' },
+            { id: 'angel', name: 'Ангельская', price: 400, emoji: '😇' },
+            { id: 'devil', name: 'Дьявольская', price: 400, emoji: '😈' },
+            { id: 'star', name: 'Звезда', price: 280, emoji: '⭐' },
+            { id: 'heart', name: 'Сердечко', price: 260, emoji: '❤️' }
         ];
         
         // Сброс всех данных
@@ -601,6 +898,20 @@
             if (saved) {
                 const parsed = JSON.parse(saved);
                 gameData = { ...gameData, ...parsed };
+                // Убедимся что questsProgress существует
+                if (!gameData.questsProgress) {
+                    gameData.questsProgress = {
+                        firstGame: { progress: 0, claimed: false },
+                        score10: { progress: 0, claimed: false },
+                        score50: { progress: 0, claimed: false },
+                        games10: { progress: 0, claimed: false }
+                    };
+                }
+                // Миграция с моделей на шляпы
+                if (gameData.ownedModels && !gameData.ownedHats) {
+                    gameData.ownedHats = ['none'];
+                    gameData.equippedHat = 'none';
+                }
             }
             updateCoinsDisplay();
         }
@@ -615,6 +926,60 @@
             document.getElementById('coinsAmount').textContent = gameData.coins;
         }
         
+        // ==================== ПОКУПКА МОНЕТ ====================
+        let codeVerified = false;
+        const SECRET_CODE = 'hello33333';
+        
+        function openBuyCoinsModal() {
+            document.getElementById('buyCoinsModal').classList.remove('hidden');
+            document.getElementById('secretCodeInput').value = '';
+            document.getElementById('coinsAmountInput').value = '';
+            document.getElementById('codeStatus').classList.add('hidden');
+            document.getElementById('coinsAmountSection').classList.add('hidden');
+            document.getElementById('checkCodeBtn').classList.remove('hidden');
+            codeVerified = false;
+        }
+        
+        function closeBuyCoinsModal() {
+            document.getElementById('buyCoinsModal').classList.add('hidden');
+        }
+        
+        function checkSecretCode() {
+            const code = document.getElementById('secretCodeInput').value.trim();
+            const codeStatus = document.getElementById('codeStatus');
+            
+            if (code === SECRET_CODE) {
+                codeStatus.textContent = '✅ Код верный!';
+                codeStatus.className = 'code-status success';
+                codeStatus.classList.remove('hidden');
+                document.getElementById('coinsAmountSection').classList.remove('hidden');
+                document.getElementById('checkCodeBtn').classList.add('hidden');
+                codeVerified = true;
+            } else {
+                codeStatus.textContent = '❌ Неверный код!';
+                codeStatus.className = 'code-status error';
+                codeStatus.classList.remove('hidden');
+                codeVerified = false;
+            }
+        }
+        
+        function addCoins() {
+            if (!codeVerified) return;
+            
+            const amount = parseInt(document.getElementById('coinsAmountInput').value);
+            if (isNaN(amount) || amount <= 0) {
+                alert('Введите корректное количество монет!');
+                return;
+            }
+            
+            gameData.coins += amount;
+            gameData.totalCoinsEarned = (gameData.totalCoinsEarned || 0) + amount;
+            saveGameData();
+            updateCoinsDisplay();
+            closeBuyCoinsModal();
+            alert(`✅ Вы получили ${amount} монет!`);
+        }
+        
         // ==================== ИГРОВЫЕ ПЕРЕМЕННЫЕ ====================
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
@@ -623,12 +988,13 @@
             const maxWidth = 400;
             const maxHeight = window.innerHeight - 120;
             canvas.width = Math.min(maxWidth, window.innerWidth - 20);
-            canvas.height = Math.min(500, maxHeight);
-            ground.y = canvas.height - 60;
+            canvas.height = Math.min(600, maxHeight);
+            ground.y = canvas.height - 40;
         }
         
         let gameStarted = false;
         let gameOver = false;
+        let waitingForFirstTap = false;
         let score = 0;
         let frameCount = 0;
         let currentSection = 'game';
@@ -639,15 +1005,15 @@
             width: 40,
             height: 32,
             velocity: 0,
-            gravity: 0.20, // Ещё медленнее падает
-            jump: -6,
+            gravity: 0.12,
+            jump: -4.5,
             rotation: 0
         };
         
         let pipes = [];
-        const pipeWidth = 60;
-        const pipeGap = 160;
-        const pipeSpeed = 2.5;
+        const pipeWidth = 55;
+        const pipeGap = 200;
+        const pipeSpeed = 1.8;
         
         let clouds = [];
         for (let i = 0; i < 4; i++) {
@@ -660,8 +1026,8 @@
         }
         
         const ground = {
-            y: 440,
-            height: 60
+            y: 560,
+            height: 40
         };
         
         resizeCanvas();
@@ -674,32 +1040,94 @@
                 btn.classList.remove('active');
                 if ((section === 'game' && index === 0) ||
                     (section === 'shop' && index === 1) ||
-                    (section === 'leaderboard' && index === 2)) {
+                    (section === 'quests' && index === 2) ||
+                    (section === 'stats' && index === 3)) {
                     btn.classList.add('active');
                 }
             });
             
             document.getElementById('gameSection').classList.add('hidden');
             document.getElementById('shopSection').classList.add('hidden');
-            document.getElementById('leaderboardSection').classList.add('hidden');
+            document.getElementById('questsSection').classList.add('hidden');
+            document.getElementById('statsSection').classList.add('hidden');
             
             if (section === 'game') {
                 document.getElementById('gameSection').classList.remove('hidden');
-                if (!gameStarted) {
+                if (!gameStarted && !waitingForFirstTap) {
                     initialDraw();
                 }
             } else if (section === 'shop') {
                 document.getElementById('shopSection').classList.remove('hidden');
                 renderShop();
-            } else if (section === 'leaderboard') {
-                document.getElementById('leaderboardSection').classList.remove('hidden');
-                showLeaderboard('week');
+            } else if (section === 'quests') {
+                document.getElementById('questsSection').classList.remove('hidden');
+                renderQuests();
+            } else if (section === 'stats') {
+                document.getElementById('statsSection').classList.remove('hidden');
+                renderStats();
+            }
+        }
+        
+        // ==================== КВЕСТЫ ====================
+        function renderQuests() {
+            const container = document.getElementById('questsContainer');
+            container.innerHTML = '';
+            
+            quests.forEach(quest => {
+                const progress = quest.getProgress();
+                const completed = progress >= quest.target;
+                const claimed = gameData.questsProgress[quest.id]?.claimed || false;
+                const percentage = Math.min((progress / quest.target) * 100, 100);
+                
+                const card = document.createElement('div');
+                card.className = `quest-card ${completed ? 'completed' : ''} ${claimed ? 'claimed' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="quest-header">
+                        <div class="quest-icon">${quest.icon}</div>
+                        <div class="quest-info">
+                            <div class="quest-title">${quest.title}</div>
+                            <div class="quest-desc">${quest.desc}</div>
+                        </div>
+                    </div>
+                    <div class="quest-progress">
+                        <div class="quest-progress-bar" style="width: ${percentage}%">
+                            ${progress}/${quest.target}
+                        </div>
+                    </div>
+                    <div class="quest-reward">
+                        <span class="quest-reward-text">🪙 +${quest.reward} монет</span>
+                        <button class="quest-claim-btn ${claimed ? 'claimed' : ''}" 
+                                onclick="claimQuest('${quest.id}')"
+                                ${!completed || claimed ? 'disabled' : ''}>
+                            ${claimed ? '✅ Получено' : (completed ? '🎁 Забрать' : '🔒 Заблокировано')}
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        function claimQuest(questId) {
+            const quest = quests.find(q => q.id === questId);
+            if (!quest) return;
+            
+            const progress = quest.getProgress();
+            if (progress >= quest.target && !gameData.questsProgress[questId]?.claimed) {
+                gameData.coins += quest.reward;
+                gameData.totalCoinsEarned = (gameData.totalCoinsEarned || 0) + quest.reward;
+                gameData.questsProgress[questId] = { progress: progress, claimed: true };
+                saveGameData();
+                updateCoinsDisplay();
+                renderQuests();
+                alert(`🎉 Вы получили ${quest.reward} монет за квест "${quest.title}"!`);
             }
         }
         
         // ==================== МАГАЗИН ====================
         function renderShop() {
-            // Скины
+            // Скины/Цвета
             const skinsGrid = document.getElementById('skinsGrid');
             skinsGrid.innerHTML = '';
             
@@ -713,23 +1141,21 @@
                 let previewStyle = `background: ${skin.bodyColor};`;
                 if (skin.id === 'rainbow') {
                     previewStyle = `background: linear-gradient(45deg, red, orange, yellow, green, blue, purple);`;
-                } else if (skin.id === 'galaxy') {
-                    previewStyle = `background: linear-gradient(45deg, #1a1a2e, #4a4a8a, #1a1a2e);`;
                 }
                 
                 item.innerHTML = `
                     <div class="skin-preview" style="${previewStyle}"></div>
                     <div class="item-name">${skin.name}</div>
-                    <div class="item-price">${skin.price === 0 ? 'Бесплатно' : '🪙' + skin.price}</div>
+                    <div class="item-price">${skin.price === 0 ? 'Бесплатно' : '🪙 ' + skin.price}</div>
                     ${owned 
-                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipSkin('${skin.id}')">${equipped ? '✓' : 'Надеть'}</button>`
+                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipSkin('${skin.id}')">${equipped ? '✓ Надето' : 'Надеть'}</button>`
                         : `<button class="shop-btn buy" onclick="buySkin('${skin.id}')">Купить</button>`
                     }
                 `;
                 skinsGrid.appendChild(item);
             });
             
-            // Аксессуары
+            // Шляпы
             const hatsGrid = document.getElementById('hatsGrid');
             hatsGrid.innerHTML = '';
             
@@ -741,11 +1167,11 @@
                 item.className = `shop-item ${owned ? 'owned' : ''} ${equipped ? 'equipped' : ''}`;
                 
                 item.innerHTML = `
-                    <div class="item-preview">${hat.emoji}</div>
+                    <div class="hat-preview">${hat.emoji}</div>
                     <div class="item-name">${hat.name}</div>
-                    <div class="item-price">${hat.price === 0 ? 'Бесплатно' : '🪙' + hat.price}</div>
+                    <div class="item-price">${hat.price === 0 ? 'Бесплатно' : '🪙 ' + hat.price}</div>
                     ${owned 
-                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipHat('${hat.id}')">${equipped ? '✓' : 'Надеть'}</button>`
+                        ? `<button class="shop-btn ${equipped ? 'equipped' : 'equip'}" onclick="equipHat('${hat.id}')">${equipped ? '✓ Надето' : 'Надеть'}</button>`
                         : `<button class="shop-btn buy" onclick="buyHat('${hat.id}')">Купить</button>`
                     }
                 `;
@@ -793,58 +1219,44 @@
             renderShop();
         }
         
-        // ==================== ЛИДЕРБОРД ====================
-        function showLeaderboard(period) {
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        // ==================== СТАТИСТИКА ====================
+        function renderStats() {
+            document.getElementById('statsName').textContent = gameData.chickenName || 'Курочка';
+            document.getElementById('statsBest').textContent = gameData.bestScore;
+            document.getElementById('statsTotalGames').textContent = gameData.scores.length;
             
-            const now = new Date();
-            let filteredScores = gameData.scores.filter(s => {
-                const scoreDate = new Date(s.date);
-                if (period === 'week') {
-                    const weekAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
-                    return scoreDate >= weekAgo;
-                } else if (period === 'month') {
-                    const monthAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
-                    return scoreDate >= monthAgo;
-                } else if (period === 'year') {
-                    const yearAgo = new Date(now - 365 * 24 * 60 * 60 * 1000);
-                    return scoreDate >= yearAgo;
-                }
-                return true;
-            });
+            const totalScore = gameData.scores.reduce((sum, s) => sum + s.score, 0);
+            document.getElementById('statsTotalScore').textContent = totalScore;
             
-            // Сортировка по убыванию
-            filteredScores.sort((a, b) => b.score - a.score);
+            const average = gameData.scores.length > 0 ? Math.round(totalScore / gameData.scores.length) : 0;
+            document.getElementById('statsAverage').textContent = average;
             
-            const list = document.getElementById('leaderboardList');
+            document.getElementById('statsTotalCoins').textContent = gameData.totalCoinsEarned || 0;
             
-            if (filteredScores.length === 0) {
-                list.innerHTML = '<p style="text-align: center; color: #8B4513; padding: 40px;">Пока нет результатов. Сыграй! 🎮</p>';
-                return;
-            }
+            const totalItems = (gameData.ownedSkins.length - 1) + (gameData.ownedHats.length - 1);
+            document.getElementById('statsItems').textContent = totalItems;
             
-            // Показываем ВСЕ результаты
-            list.innerHTML = filteredScores.map((entry, index) => {
-                let rankClass = '';
-                let rankEmoji = index + 1;
-                if (index === 0) { rankClass = 'top-1'; rankEmoji = '🥇'; }
-                else if (index === 1) { rankClass = 'top-2'; rankEmoji = '🥈'; }
-                else if (index === 2) { rankClass = 'top-3'; rankEmoji = '🥉'; }
-                
-                const date = new Date(entry.date).toLocaleDateString('ru-RU');
-                
-                return `
-                    <div class="leaderboard-item ${rankClass}">
-                        <div class="rank">${rankEmoji}</div>
-                        <div class="player-info">
-                            <div class="player-name">🐔 ${gameData.chickenName}</div>
-                            <div style="font-size: 0.75rem; color: #666;">${date}</div>
+            // Последние игры
+            const recentGames = document.getElementById('recentGames');
+            const lastGames = gameData.scores.slice(-10).reverse();
+            
+            if (lastGames.length === 0) {
+                recentGames.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">Пока нет игр 🎮</p>';
+            } else {
+                recentGames.innerHTML = lastGames.map((game, index) => {
+                    const date = new Date(game.date).toLocaleDateString('ru-RU');
+                    const time = new Date(game.date).toLocaleTimeString('ru-RU', {hour: '2-digit', minute: '2-digit'});
+                    return `
+                        <div class="recent-game-item">
+                            <div>
+                                <div style="color: #8B4513;">#${gameData.scores.length - index}</div>
+                                <div style="font-size: 0.75rem; color: #888;">${date} ${time}</div>
+                            </div>
+                            <div style="color: #FF6347; font-size: 1.2rem;">${game.score} 🏆</div>
                         </div>
-                        <div class="player-score">${entry.score} 🏆</div>
-                    </div>
-                `;
-            }).join('');
+                    `;
+                }).join('');
+            }
         }
         
         // ==================== ИГРА ====================
@@ -864,6 +1276,7 @@
             document.getElementById('chickenGreeting').innerHTML = `🐔 ${gameData.chickenName} 🐔`;
             document.getElementById('displayBestScore').textContent = gameData.bestScore;
             document.getElementById('startPanel').classList.remove('hidden');
+            document.getElementById('tapHint').classList.add('hidden');
         }
         
         document.getElementById('chickenName').addEventListener('keypress', (e) => {
@@ -872,13 +1285,43 @@
         
         function startGame() {
             document.getElementById('startPanel').classList.add('hidden');
-            gameStarted = true;
+            document.getElementById('tapHint').classList.remove('hidden');
+            
+            // Сбрасываем всё
             gameOver = false;
             score = 0;
             frameCount = 0;
             pipes = [];
-            chicken.y = canvas.height / 2;
+            chicken.y = canvas.height * 0.35;
             chicken.velocity = 0;
+            chicken.rotation = 0;
+            
+            // Курица стоит на месте, ждём первого тапа
+            waitingForFirstTap = true;
+            gameStarted = false;
+            
+            // Рисуем начальную сцену
+            waitingLoop();
+        }
+        
+        function waitingLoop() {
+            if (waitingForFirstTap && !gameOver) {
+                drawBackground();
+                drawGround();
+                drawChicken();
+                
+                // Анимируем крылья даже когда стоим
+                frameCount++;
+                
+                requestAnimationFrame(waitingLoop);
+            }
+        }
+        
+        function actuallyStartGame() {
+            waitingForFirstTap = false;
+            gameStarted = true;
+            document.getElementById('tapHint').classList.add('hidden');
+            chicken.velocity = chicken.jump;
             gameLoop();
         }
         
@@ -888,7 +1331,14 @@
         }
         
         function flap() {
-            if (gameStarted && !gameOver && currentSection === 'game') {
+            if (currentSection !== 'game') return;
+            
+            if (waitingForFirstTap && !gameOver) {
+                actuallyStartGame();
+                return;
+            }
+            
+            if (gameStarted && !gameOver) {
                 chicken.velocity = chicken.jump;
             }
         }
@@ -957,13 +1407,13 @@
         
         function drawGround() {
             ctx.fillStyle = '#228B22';
-            ctx.fillRect(0, ground.y, canvas.width, 15);
+            ctx.fillRect(0, ground.y, canvas.width, 12);
             ctx.fillStyle = '#8B4513';
-            ctx.fillRect(0, ground.y + 15, canvas.width, ground.height - 15);
+            ctx.fillRect(0, ground.y + 12, canvas.width, ground.height - 12);
             ctx.fillStyle = '#A0522D';
             for (let i = 0; i < canvas.width; i += 25) {
-                ctx.fillRect(i, ground.y + 20, 15, 8);
-                ctx.fillRect(i + 12, ground.y + 35, 15, 8);
+                ctx.fillRect(i, ground.y + 18, 15, 8);
+                ctx.fillRect(i + 12, ground.y + 30, 15, 8);
             }
         }
         
@@ -994,12 +1444,16 @@
         
         function drawChicken() {
             const skin = skins.find(s => s.id === gameData.equippedSkin) || skins[0];
-            const hat = hats.find(h => h.id === gameData.equippedHat);
+            const hat = hats.find(h => h.id === gameData.equippedHat) || hats[0];
             
             ctx.save();
             ctx.translate(chicken.x + chicken.width / 2, chicken.y + chicken.height / 2);
             
-            chicken.rotation = Math.min(Math.max(chicken.velocity * 4, -25), 70);
+            if (waitingForFirstTap) {
+                chicken.rotation = 0;
+            } else {
+                chicken.rotation = Math.min(Math.max(chicken.velocity * 3, -20), 50);
+            }
             ctx.rotate(chicken.rotation * Math.PI / 180);
             
             // Тело
@@ -1013,12 +1467,6 @@
                 rainbowGradient.addColorStop(0.83, '#4B0082');
                 rainbowGradient.addColorStop(1, '#8B00FF');
                 ctx.fillStyle = rainbowGradient;
-            } else if (skin.id === 'galaxy') {
-                const galaxyGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, chicken.width/2);
-                galaxyGradient.addColorStop(0, '#4a4a8a');
-                galaxyGradient.addColorStop(0.5, '#1a1a2e');
-                galaxyGradient.addColorStop(1, '#0a0a1e');
-                ctx.fillStyle = galaxyGradient;
             } else {
                 ctx.fillStyle = skin.bodyColor;
             }
@@ -1032,20 +1480,8 @@
             ctx.ellipse(4, 4, chicken.width / 3, chicken.height / 3, 0, 0, Math.PI * 2);
             ctx.fill();
             
-            // Звёзды для галактики
-            if (skin.id === 'galaxy') {
-                ctx.fillStyle = 'white';
-                for (let i = 0; i < 5; i++) {
-                    const sx = (Math.sin(frameCount * 0.05 + i) * 10);
-                    const sy = (Math.cos(frameCount * 0.05 + i * 2) * 8);
-                    ctx.beginPath();
-                    ctx.arc(sx, sy, 1, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            }
-            
             // Крыло
-            ctx.fillStyle = skin.id === 'rainbow' ? '#FF69B4' : (skin.id === 'galaxy' ? '#6a6aaa' : '#DAA520');
+            ctx.fillStyle = '#DAA520';
             ctx.beginPath();
             const wingFlap = Math.sin(frameCount * 0.4) * 4;
             ctx.ellipse(-4, wingFlap, 10, 14, -0.3, 0, Math.PI * 2);
@@ -1088,11 +1524,12 @@
             ctx.arc(16, 10, 4, 0, Math.PI * 2);
             ctx.fill();
             
-            // Шляпа/аксессуар
-            if (hat && hat.id !== 'none') {
-                ctx.font = '20px Arial';
+            // Шляпа
+            if (hat.id !== 'none') {
+                ctx.font = '28px Arial';
                 ctx.textAlign = 'center';
-                ctx.fillText(hat.emoji, 0, -24);
+                ctx.textBaseline = 'middle';
+                ctx.fillText(hat.emoji, 0, -28);
             }
             
             ctx.restore();
@@ -1130,7 +1567,7 @@
             chicken.velocity += chicken.gravity;
             chicken.y += chicken.velocity;
             
-            if (frameCount % 120 === 0) {
+            if (frameCount % 180 === 0) {
                 createPipe();
             }
             
@@ -1141,6 +1578,7 @@
                     pipe.passed = true;
                     score++;
                     gameData.coins += 20;
+                    gameData.totalCoinsEarned = (gameData.totalCoinsEarned || 0) + 20;
                     updateCoinsDisplay();
                 }
             });
@@ -1155,6 +1593,7 @@
         function endGame() {
             gameOver = true;
             gameStarted = false;
+            waitingForFirstTap = false;
             
             // Сохраняем результат
             gameData.scores.push({
@@ -1192,7 +1631,7 @@
         }
         
         function gameLoop() {
-            if (!gameOver) {
+            if (!gameOver && gameStarted) {
                 update();
                 draw();
                 requestAnimationFrame(gameLoop);
@@ -1203,6 +1642,7 @@
             drawBackground();
             drawGround();
             chicken.y = canvas.height / 2;
+            chicken.rotation = 0;
             drawChicken();
         }
         
@@ -1220,7 +1660,7 @@
         
         window.addEventListener('resize', () => {
             resizeCanvas();
-            if (!gameStarted) {
+            if (!gameStarted && !waitingForFirstTap) {
                 initialDraw();
             }
         });
